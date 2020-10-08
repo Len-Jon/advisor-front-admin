@@ -19,7 +19,7 @@
       </el-form>
     </div>
     <div class="underInput">
-      <el-checkbox class="check" v-model="checked">记住密码</el-checkbox>
+      <el-checkbox class="remember" v-model="checked">记住密码</el-checkbox>
       <el-button @click="userLogin" class="button" type="primary" size="medium">登录</el-button>
     </div>
   </div>
@@ -102,8 +102,8 @@ export default {
   left: 0.8%;
 }
 
-.check {
+.remember {
   position: relative;
-  left: -9%;
+  left: -10vw;
 }
 </style>

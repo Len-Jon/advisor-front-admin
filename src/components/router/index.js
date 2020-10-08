@@ -8,6 +8,7 @@ const User = () => import('../user/User.vue')
 const Statistic = () => import('../statistic/Statistic.vue')
 const Advisor = () => import('../advisor/Advisor.vue')
 const Design = () => import('../design/Design.vue')
+const AddAdvisor = () => import('../advisor/AddAdvisor.vue')
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,7 @@ const routes = [
       { path: 'statistic', component: Statistic },
       { path: 'account', component: Account },
       { path: 'advisor', component: Advisor },
+      { path: 'advisor/add', component: AddAdvisor },
       { path: 'design', component: Design },
     ]
   },

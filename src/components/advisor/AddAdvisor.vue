@@ -1,5 +1,13 @@
 <template>
-  <div class="top">
+  <div class="main">
+    <el-input
+      placeholder="姓名"
+      v-model="advisorName"
+      clearable
+    >
+    </el-input>
+    <p>批量导入请用中文分号将姓名隔开</p>
+    <p class="college">学院</p>
     <el-select
       v-model="chosenValue"
       placeholder="请选择"
@@ -12,10 +20,6 @@
       >
       </el-option>
     </el-select>
-    <el-button
-      size="medium"
-      type="primary"
-    >导出完成人数</el-button>
   </div>
 </template>
 
@@ -24,34 +28,42 @@
 export default {
   data() {
     return {
+      advisorName: "",
       collegeNames: [],
-      chosenValue: "所有学院",
+      chosenValue: "",
     };
+  },
+  created: async function() {
+    let { data } = await this.$http.get("admin");
+    data = data.data;
+    this.collegeNames = JSON.parse(data.collegeNames);
   },
   computed: {
     college() {
       return this.collegeNames.map((item) => ({ value: item, label: item }));
     },
   },
-  created: async function() {
-    let { data } = await this.$http.get("admin");
-    data = data.data;
-    this.collegeNames.push("所有学院");
-    let tmp = JSON.parse(data.collegeNames);
-    this.collegeNames = this.collegeNames.concat(tmp);
-    console.log(this.collegeNames);
-  },
 };
 </script>
 
 
 <style scoped>
-.top {
+.main {
   position: relative;
   left: 13%;
+  top: 5%;
 }
 
-.el-button {
-  display: block;
+p {
+  font-size: 6px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.college {
+  margin-top: 5px;
+}
+
+.el-input {
+  width: 30%;
 }
 </style>
