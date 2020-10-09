@@ -3,6 +3,7 @@
     <el-button
       class="addAccountBtn"
       type="success"
+      @click="addDialog=true"
     >添加账号</el-button>
     <el-table :data="accountData">
       <el-table-column
@@ -46,25 +47,20 @@
       </el-table-column>
     </el-table>
 
-    <!-- 编辑弹框 -->
+    <!-- 添加账号弹框 -->
     <el-dialog
-      title="编辑"
-      :visible.sync="editDialog"
+      title="添加账号"
+      :visible.sync="addDialog"
     >
-      <el-form :model="editForm">
+      <el-form :model="addForm">
         <el-form-item label="用户名">
-          <el-input
-            v-bind:value="dialogData"
-            autocomplete="off"
-          ></el-input>
+          <el-input v-bind:value="dialogData"></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input
-            v-model="editForm.password"
-            autocomplete="off"
-            placeholder="密码为空则不修改"
+            v-model="addForm.password"
+            placeholder="请输入密码"
           ></el-input>
-          <p class="passwordkong"></p>
         </el-form-item>
         <el-form-item>
           <el-select
@@ -94,10 +90,64 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="addDialog = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogFormVisible = false"
+          @click="addDialog = false"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 编辑弹框 -->
+    <el-dialog
+      title="编辑"
+      :visible.sync="editDialog"
+    >
+      <el-form :model="editForm">
+        <el-form-item label="用户名">
+          <el-input
+            v-bind:value="editForm.username"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input
+            v-model="editForm.password"
+            placeholder="密码为空则不修改"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="value"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <p>是否启用</p>
+          <el-switch
+            v-model="turnOn"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          >
+          </el-switch>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="editDialog = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="editDialog = false"
         >确 定</el-button>
       </div>
     </el-dialog>
@@ -110,18 +160,24 @@ export default {
   data() {
     return {
       accountData: [],
-      editDialog: true,
+      editDialog: false,
+      addDialog: false,
       dialogData: "",
       editForm: {
         username: "123",
         password: "",
       },
-      turnOn: false
+      addForm: {
+        username: "",
+        password: "",
+      },
+      turnOn: true,
     };
   },
   created: async function() {
     let { data } = await this.$http.get("account");
     data = data.data;
+    console.log(data);
     this.accountData = data.account;
     this.accountData = this.tableData;
   },
