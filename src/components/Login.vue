@@ -4,17 +4,18 @@
       <img class="logo" src="../assets/imgs/njupt.png" alt="">
       <div class="wenzi">请登录</div>
     </div>
-    <div class="input">
+    <div>
       <el-form
         ref="loginFormRef"
         :rules="loginFormRules"
         :model="loginForm"
+        class="input"
       >
-        <el-form-item>
-          <el-input class="input" v-model="loginForm.username" placeholder="请输入用户名"></el-input>
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-on:keyup.enter.native="userLogin" class="input" placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
+        <el-form-item prop="password">
+          <el-input v-on:keyup.enter.native="userLogin" placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -37,17 +38,18 @@ export default {
       checked: false,
       loginFormRules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
     userLogin() {
-      this.$refs.loginFormRef.validate(async valid => {
+      this.$refs['loginFormRef'].validate(async valid => {
+        console.log(valid)
         if(!valid) return
         const { data } = await this.$http.post('login', this.loginForm)
         console.log(data)
@@ -65,13 +67,14 @@ export default {
 .head {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%)
+  transform: translateX(-50%);
 }
 
 .logo {
   width: 100px;
   position: relative;
   top: 14vh;
+  left: -0.3vw;
 }
 
 .wenzi {
@@ -85,7 +88,7 @@ export default {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  top: 17vh;
+  top: 33.3vh;
   margin-top: 10px;
   margin-bottom: 10px;
 }

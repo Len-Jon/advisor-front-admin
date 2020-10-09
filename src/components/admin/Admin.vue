@@ -120,15 +120,14 @@ export default {
       this.$router.push("/login");
     },
   },
-  beforeCreate: async function() {
-    try {
-      await this.$http.get("/admin");
-    } catch (err) {
-      this.$message.error("请先登录！");
-      this.$router.push('/login')
-    }
-    // if (res.code === 401) console.log('hasd')
-  },
+  // beforeCreate: async function() {
+  //   try {
+  //     await this.$http.get("/admin");
+  //   } catch (err) {
+  //     this.$message.error("请先登录！");
+  //     this.$router.push('/login')
+  //   }
+  // },
 };
 </script>
 

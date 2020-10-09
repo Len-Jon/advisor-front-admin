@@ -7,7 +7,7 @@
     >添加导员</el-button>
     <el-table
       :data="advisors"
-      style="width: 80%"
+      style="width: 70%"
     >
       <el-table-column
         prop="id"

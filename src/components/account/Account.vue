@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <el-table
-      :data="accountData"
-      style="width: 100%"
-    >
-      <el-table-column type="index"></el-table-column>
+  <div class="accountTable">
+    <el-button
+      class="addAccountBtn"
+      type="success"
+    >添加账号</el-button>
+    <el-table :data="accountData">
       <el-table-column
         prop="username"
         label="用户名"
-        width="180"
+        width="170"
       >
       </el-table-column>
       <el-table-column
@@ -20,11 +20,13 @@
       <el-table-column
         prop="count"
         label="已完成人数"
+        width="160"
       >
       </el-table-column>
       <el-table-column
         prop="enabled"
         label="已启用"
+        width="80"
       >
       </el-table-column>
       <el-table-column label="操作">
@@ -38,39 +40,67 @@
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
           >删除</el-button>
 
-          <!-- 编辑弹框 -->
-          <el-dialog
-            title="编辑"
-            :visible.sync="editDialog"
-          >
-            <el-form :model="editForm">
-              <el-form-item label="用户名">
-                <el-input
-                  v-bind:value="scope.row.username"
-                  autocomplete="off"
-                  disabled
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="活动区域">
-              </el-form-item>
-            </el-form>
-            <div
-              slot="footer"
-              class="dialog-footer"
-            >
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button
-                type="primary"
-                @click="dialogFormVisible = false"
-              >确 定</el-button>
-            </div>
-          </el-dialog>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 编辑弹框 -->
+    <el-dialog
+      title="编辑"
+      :visible.sync="editDialog"
+    >
+      <el-form :model="editForm">
+        <el-form-item label="用户名">
+          <el-input
+            v-bind:value="dialogData"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input
+            v-model="editForm.password"
+            autocomplete="off"
+            placeholder="密码为空则不修改"
+          ></el-input>
+          <p class="passwordkong"></p>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="value"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <p>是否启用</p>
+          <el-switch
+            v-model="turnOn"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          >
+          </el-switch>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogFormVisible = false"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -80,10 +110,13 @@ export default {
   data() {
     return {
       accountData: [],
-      editDialog: false,
+      editDialog: true,
+      dialogData: "",
       editForm: {
-        name: "123",
+        username: "123",
+        password: "",
       },
+      turnOn: false
     };
   },
   created: async function() {
@@ -114,9 +147,10 @@ export default {
   },
   methods: {
     async handleEdit(scope) {
-      console.log('scope:', scope);
+      console.log("scope:", scope);
       this.editDialog = true;
       this.accountData = this.tableData;
+      this.editForm.username = scope.row.username;
     },
   },
 };
@@ -134,5 +168,20 @@ export default {
 
 .el-table th {
   text-align: center;
+}
+
+.accountTable {
+  position: relative;
+  top: 3%;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.el-table {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.addAccountBtn {
+  margin-bottom: 20px;
 }
 </style>
