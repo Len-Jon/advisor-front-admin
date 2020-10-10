@@ -7,7 +7,7 @@
     >添加导员</el-button>
     <el-table
       :data="advisors"
-      style="width: 70%"
+      style="width: 75%"
     >
       <el-table-column
         prop="id"
@@ -53,7 +53,6 @@ export default {
   },
   created: async function() {
     let { data } = await this.$http.get("advisor");
-    data = data.data;
     this.advisors = data.advisors;
     console.log(this.advisors);
   },
@@ -66,14 +65,23 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 .main {
   position: relative;
-  left: 13%;
+  /* left: 13%; */
+  margin-left: 13%;
 }
 
 .el-table {
   margin-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+}
+
+.el-table td {
+  text-align: center;
+}
+
+.el-table th {
+  text-align: center;
 }
 </style>

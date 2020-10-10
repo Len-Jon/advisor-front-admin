@@ -35,7 +35,6 @@ export default {
   },
   created: async function() {
     let { data } = await this.$http.get("admin");
-    data = data.data;
     this.collegeNames.push("所有学院");
     let tmp = JSON.parse(data.collegeNames);
     this.collegeNames = this.collegeNames.concat(tmp);

@@ -1,55 +1,151 @@
 <template>
-  <div>
+  <div class="main">
+    <p>题型</p>
     <el-form
       ref="form"
       :model="form"
+      class="form"
     >
-      <el-form-item>
-        <p>题型</p>
-        <el-select
-          v-model="type"
-          placeholder="请选择"
-          width="50"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+      <div class="mid-content">
+        <el-form-item>
+          <el-select
+            v-model="problemType"
+            placeholder="请选择"
+            width="50"
+            @change="handleChange"
           >
-          </el-option>
-        </el-select>
-      </el-form-item>
+            <el-option
+              v-for="item in typeMap"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            class="tigan"
+            placeholder="题干"
+            v-model="problemTitle"
+          ></el-input>
+        </el-form-item>
+        <el-button
+          class="deleteBtn"
+          size="medium"
+          type="danger"
+          @click="handleDelete"
+        >删除</el-button>
+      </div>
+      <div
+        v-if="problemType === '单选'"
+        class="bottom-content"
+      >
+        <Single :options.sync="options" />
+      </div>
     </el-form>
   </div>
 </template>
 
 
 <script>
+import Single from "./Single.vue";
 export default {
+  props: ["type", "title", "options", "index"],
+  components: {
+    Single,
+  },
   data() {
     return {
       form: {},
-      options: [
-        { value: "single", label: "单选" },
-        { value: "wenda", label: "问答" },
+      typeMap: [
+        { value: "单选", label: "单选" },
+        { value: "问答", label: "问答" },
       ],
-      type: "",
     };
+  },
+  computed: {
+    problemType: {
+      get() {
+        return this.type;
+      },
+      set(val) {
+        this.$emit("update:type", val);
+      },
+    },
+    problemTitle: {
+      get() {
+        return this.title;
+      },
+      set(val) {
+        this.$emit("update:title", val);
+      },
+    },
+    problemOptions: {
+      get() {
+        return this.options;
+      },
+      set(val) {
+        this.$emit("update:options", val);
+      },
+    },
+  },
+  methods: {
+    handleChange() {
+      console.log(this.type);
+    },
+    handleDelete() {
+      this.$emit("handleDelete", this.index)
+    }
   },
 };
 </script>
 
 
 <style scoped>
+.main {
+  margin-left: 13%;
+}
+
+.top-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mid-content {
+  display: flex;
+}
+
 .el-select {
   width: 100px;
+  margin-right: 40px;
 }
 
 p {
   font-size: 10px;
-  color: #9D9D9D;
+  color: #9d9d9d;
   margin: 0;
   padding: 0;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.tigan {
+  width: 720px;
+}
+
+.el-form-item {
+  margin: 0;
+}
+
+.form {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.deleteBtn {
+  margin-left: 20px;
 }
 </style>

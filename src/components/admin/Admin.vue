@@ -30,29 +30,11 @@
           >确 定</el-button>
         </span>
       </el-dialog>
-      <!-- 前往登录提示框 -->
-      <el-dialog
-        title="退出成功！"
-        :visible.sync="nextLogoutVisible"
-        width="30%"
-      >
-        <span>即将前往登录页面</span>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="nextLogoutVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="toLogin"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse ? '115px' : '200px'">
-        <el-radio-group
+        <!-- <el-radio-group
           :collapse="true"
           v-model="isCollapse"
           style="margin-bottom: 20px;"
@@ -63,7 +45,7 @@
           <el-radio-button :label="true">
             <i class="el-icon-s-fold"></i>
           </el-radio-button>
-        </el-radio-group>
+        </el-radio-group> -->
         <el-menu
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
@@ -113,10 +95,7 @@ export default {
       const { data } = await this.$http.get("logout");
       console.log(data);
       if (data.code !== 200) return;
-      this.nextLogoutVisible = true;
-    },
-    toLogin() {
-      this.nextLogoutVisible = false;
+      this.logoutVisible = false;
       this.$router.push("/login");
     },
   },
@@ -125,7 +104,7 @@ export default {
       await this.$http.get("/admin");
     } catch (err) {
       this.$message.error("请先登录！");
-      this.$router.push('/login')
+      this.$router.push("/login");
     }
   },
 };

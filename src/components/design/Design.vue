@@ -1,32 +1,97 @@
 <template>
-  <div>
-    <div class="buttons">
-      <!-- <el-button size="medium" type="primary">新增一项</el-button>
-      <el-button size="medium" type="success">提交</el-button> -->
+  <div class="main">
+    <div>
+      <el-button
+        size="medium"
+        type="primary"
+        @click="handleAddProblem"
+      >新增一项</el-button>
+      <el-button
+        size="medium"
+        type="success"
+        @click="handleSubmit"
+      >提交</el-button>
     </div>
-    <Problem />
+    <Problem
+      v-for="(item, index) in problems"
+      :key="index"
+      :index="index"
+      :type.sync="item.type"
+      :title.sync="item.title"
+      :options.sync="item.options"
+      @handleDelete="handleProblemDelete"
+    />
   </div>
 </template>
 
 
 <script>
-import Problem from './Problem.vue'
+import Problem from "./Problem.vue";
 export default {
   data() {
     return {
-      
-    }
+      problems: [],
+      problem: {
+        type: "",
+        title: "",
+        options: null,
+      },
+    };
   },
   components: {
-    Problem
-  }
-}
+    Problem,
+  },
+  methods: {
+    handleAddProblem() {
+      this.problems.push({
+        ...this.problem,
+        options: [
+          { choose: "", score: "" },
+          { choose: "", score: "" },
+          { choose: "", score: "" },
+          { choose: "", score: "" },
+          { choose: "", score: "" },
+        ],
+      });
+    },
+    async handleSubmit() {
+      const submitData = this.problems.reduce(
+        (prev, curr) => {
+          prev.type.push(curr.type);
+          prev.title.push(curr.title);
+          prev.options.push(
+            ...curr.options
+              .map((item) => item.choose)
+              .filter((item) => item.length !== 0)
+          );
+          prev.score.push(
+            ...curr.options
+              .map((item) => Number(item.score))
+              .filter((item) => item)
+          );
+
+          return prev;
+        },
+        {
+          type: [],
+          title: [],
+          options: [],
+          score: [],
+        }
+      );
+      console.log(submitData);
+    },
+    handleProblemDelete(index) {
+      this.problems.splice(index, 1);
+    },
+  },
+};
 </script>
 
 
 <style scoped>
-.buttons {
-  position: relative;
-  left: 13%;
+.main {
+  /* position: relative; */
+  margin: 0 auto;
 }
 </style>

@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="head">
-      <img class="logo" src="../assets/imgs/njupt.png" alt="">
+      <img
+        class="logo"
+        src="../assets/imgs/njupt.png"
+        alt=""
+      >
       <div class="wenzi">请登录</div>
     </div>
     <div>
@@ -12,54 +16,78 @@
         class="input"
       >
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
+          <el-input
+            v-model="loginForm.username"
+            placeholder="请输入用户名"
+          ></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-on:keyup.enter.native="userLogin" placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
+          <el-input
+            v-on:keyup.enter.native="userLogin"
+            placeholder="请输入密码"
+            v-model="loginForm.password"
+            show-password
+          ></el-input>
         </el-form-item>
       </el-form>
     </div>
     <div class="underInput">
-      <el-checkbox class="remember" v-model="checked">记住密码</el-checkbox>
-      <el-button @click="userLogin" class="button" type="primary" size="medium">登录</el-button>
+      <el-checkbox
+        class="remember"
+        v-model="checked"
+      >记住密码</el-checkbox>
+      <el-button
+        @click="userLogin"
+        class="button"
+        type="primary"
+        size="medium"
+      >登录</el-button>
     </div>
   </div>
 </template>
 
 
 <script>
+import { getUserInfo } from "../api/getUserInfo.js";
+
 export default {
   data() {
     return {
       loginForm: {
-        "username": "admin",
-        "password": "admin",
+        username: "admin",
+        password: "admin",
       },
       checked: false,
       loginFormRules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
         ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
-        ]
-      }
-    }
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      },
+    };
   },
   methods: {
     userLogin() {
-      this.$refs['loginFormRef'].validate(async valid => {
-        console.log(valid)
-        if(!valid) return
-        const { data } = await this.$http.post('login', this.loginForm)
-        console.log(data)
-        if(data.code !== 200) return this.$message.error('登录失败')
-        this.$message.success('登录成功!')
-        this.$router.push('/admin')
-      })
-    }
-  }
-}
+      this.$refs["loginFormRef"].validate(async (valid) => {
+        console.log(valid);
+        if (!valid) return;
+        const data = await getUserInfo(this.loginForm);
+        console.log(data);
+        if (data.code !== 200) return this.$message.error("登录失败");
+        this.$message.success("登录成功!");
+
+        switch (data.data[0].authority) {
+          case "ROLE_ADMIN":
+            this.$router.push("/admin");
+            break;
+          case "ROLE_USER":
+            this.$router.push("/users")
+            break;
+        }
+      });
+    },
+  },
+};
 </script>
 
 

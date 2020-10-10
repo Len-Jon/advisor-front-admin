@@ -5,8 +5,9 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 
-axios.defaults.baseURL = "http://47.99.205.75:8086/"
-axios.defaults.withCredentials=true;
+axios.defaults.baseURL = "http://47.100.90.111:8088/"
+axios.defaults.withCredentials = true;
+axios.interceptors.response.use(value => value.data)
 Vue.prototype.$http = axios
 
 Vue.use(ElementUI)

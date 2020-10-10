@@ -50,8 +50,7 @@ export default {
 <style scoped>
 .main {
   position: relative;
-  left: 13%;
-  top: 5%;
+  /* margin: 0 auto; */
 }
 
 p {

@@ -17,5 +17,7 @@ body {
 p {
   padding: 0;
   margin: 0;
+  line-height: 28px;
 }
+
 </style>
