@@ -34,18 +34,6 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isCollapse ? '115px' : '200px'">
-        <!-- <el-radio-group
-          :collapse="true"
-          v-model="isCollapse"
-          style="margin-bottom: 20px;"
-        >
-          <el-radio-button :label="false">
-            <i class="el-icon-s-unfold"></i>
-          </el-radio-button>
-          <el-radio-button :label="true">
-            <i class="el-icon-s-fold"></i>
-          </el-radio-button>
-        </el-radio-group> -->
         <el-menu
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
@@ -92,20 +80,27 @@ export default {
   },
   methods: {
     async logout() {
-      const { data } = await this.$http.get("logout");
+      const data = await this.$http.get("logout");
       console.log(data);
       if (data.code !== 200) return;
       this.logoutVisible = false;
+      this.$message.success("操作成功！");
       this.$router.push("/login");
     },
   },
-  beforeCreate: async function() {
-    try {
-      await this.$http.get("/admin");
-    } catch (err) {
-      this.$message.error("请先登录！");
-      this.$router.push("/login");
-    }
+  // beforeCreate: async function() {
+  //   try {
+  //     const data = await this.$http.get("admin");
+  //     console.log(data)
+  //   } catch (err) {
+  //     console.log(err)
+  //     // this.$message.error(data.msg);
+  //     this.$router.push("/login");
+  //   }
+  // },
+  created: async function() {
+    const data = await this.$http.get("admin");
+    console.log(data);
   },
 };
 </script>

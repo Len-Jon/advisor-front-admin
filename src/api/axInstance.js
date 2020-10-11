@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'http://47.100.90.111:8088/',
+  baseURL: 'http://47.99.205.75:8086/',
 })
 
 instance.interceptors.response.use(value => value.data)

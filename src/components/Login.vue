@@ -69,7 +69,6 @@ export default {
   methods: {
     userLogin() {
       this.$refs["loginFormRef"].validate(async (valid) => {
-        console.log(valid);
         if (!valid) return;
         const data = await getUserInfo(this.loginForm);
         console.log(data);
@@ -108,7 +107,8 @@ export default {
 .wenzi {
   font-size: 30px;
   font-weight: 800;
-  margin-top: 140px;
+  position: relative;
+  top: 15vh;
 }
 
 .input {
@@ -116,8 +116,8 @@ export default {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  top: 33.3vh;
-  margin-top: 10px;
+  top: 34vh;
+  margin-top: 15px;
   margin-bottom: 10px;
 }
 

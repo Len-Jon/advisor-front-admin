@@ -8,30 +8,30 @@
     >添加账号</el-button>
     <el-table
       :data="accountData"
-      style="width: 75%;"
+      style="width: 70%;"
     >
       <el-table-column
         prop="username"
         label="用户名"
-        width="150"
+        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="college"
         label="学院"
-        width="150"
+        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="count"
         label="已完成人数"
-        width="160"
+        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="enabled"
         label="已启用"
-        width="80"
+        width="180"
       >
       </el-table-column>
       <el-table-column
@@ -49,6 +49,7 @@
             size="mini"
             type="danger"
             v-if="scope.row.username !== 'admin'"
+            @click="handleDeleteBtnClicked(scope)"
           >删除</el-button>
 
         </template>
@@ -60,18 +61,30 @@
       title="添加账号"
       :visible.sync="addDialogVisible"
     >
-      <el-form :model="addForm">
-        <el-form-item label="用户名">
+      <el-form
+        ref="addFormRef"
+        :model="addForm"
+      >
+        <el-form-item
+          prop="username"
+          label="用户名"
+        >
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item
+          prop="password"
+          label="密码"
+        >
           <el-input
             v-model="addForm.password"
             placeholder="请输入密码"
             show-password
           ></el-input>
         </el-form-item>
-        <el-form-item label="学院"><br>
+        <el-form-item
+          prop="college"
+          label="学院"
+        ><br>
           <el-select
             v-model="college"
             placeholder="请选择"
@@ -85,7 +98,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="enable">
           <p>是否启用</p>
           <el-switch
             v-model="enable"
@@ -160,12 +173,32 @@
         >确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 删除弹框 -->
+    <el-dialog
+      title="警告"
+      :visible.sync="deleteDialogVisible"
+      width="30%"
+    >
+      <span>该操作不可逆，确定要删除吗？</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="danger"
+          @click="handleDelete()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
 import { getCollegeList } from "../../api/getCollegeList.js";
+import { setTimeout } from 'timers';
 export default {
   data() {
     return {
@@ -174,7 +207,7 @@ export default {
       addDialogVisible: false,
       dialogData: "",
       editForm: {
-        username: "123",
+        username: "",
         password: "",
         enable: true,
         college: "",
@@ -188,6 +221,8 @@ export default {
       enable: true,
       collegeList: [],
       college: "",
+      deleteDialogVisible: false,
+      deleteUsername: "",
     };
   },
   created: async function() {
@@ -255,7 +290,27 @@ export default {
       this.addDialogVisible = false;
       console.log(this.addForm);
       const data = await this.$http.post("api/account/add", this.addForm);
-      console.log(data);
+      console.log('data', data);
+      this.$refs.addFormRef.resetFields();
+
+      if (data.code !== 200)
+        this.$message.error(data.data.msg);
+      setTimeout("location.reload()", 2000)
+    },
+    async handleDelete() {
+      const data = await this.$http.post(
+        `api/account/delete/${this.deleteUsername}`
+      );
+      console.log("deletedata", data);
+      if(data.code === 200)
+      this.$message.success('操作成功！')
+      this.deleteDialogVisible = false;
+      setTimeout("location.reload()", 2000)
+    },
+    handleDeleteBtnClicked(scope) {
+      this.deleteDialogVisible = true;
+      this.deleteUsername = scope.row.username;
+      console.log(this.deleteUsername);
     },
   },
 };

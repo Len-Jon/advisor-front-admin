@@ -1,11 +1,13 @@
 <template>
-  <el-form class="single">
-    <div
+  <div class="single">
+    <el-form
       v-for="(item, index) in options"
       :key="index"
       class="option-item"
+      :model="item"
+      :rules="rules"
     >
-      <el-form-item>
+      <el-form-item prop="choose">
         <el-input
           class="littleInput"
           placeholder="选项"
@@ -16,11 +18,11 @@
         <el-input
           class="littleInput"
           placeholder="分值"
-          v-model="item.score"
+          v-model.number="item.score"
         ></el-input>
       </el-form-item>
-    </div>
-  </el-form>
+    </el-form>
+  </div>
 </template>
 
 
@@ -36,7 +38,10 @@ export default {
     return {
       rules: {
         choose: [{ required: true, message: "请输入选项", trigger: "blur" }],
-        score: [{ required: true, message: "请输入分值", trigger: "blur" }],
+        score: [
+          { required: true, message: "请输入分值", trigger: "blur" },
+          { type: "number", message: "分值必须为数字" },
+        ],
       },
     };
   },
