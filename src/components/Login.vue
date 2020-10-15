@@ -1,14 +1,13 @@
 <template>
-  <div>
+  <div class="login">
     <div class="head">
+      <p class="head-title">辅导员评议系统</p>
       <img
-        class="logo"
+        class="head-logo"
         src="../assets/imgs/njupt.png"
-        alt=""
-      >
-      <div class="wenzi">请登录</div>
+      />
     </div>
-    <div>
+    <div class="input-container">
       <el-form
         ref="loginFormRef"
         :rules="loginFormRules"
@@ -19,6 +18,7 @@
           <el-input
             v-model="loginForm.username"
             placeholder="请输入用户名"
+            prefix-icon="el-icon-user"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -26,19 +26,20 @@
             v-on:keyup.enter.native="userLogin"
             placeholder="请输入密码"
             v-model="loginForm.password"
+            prefix-icon="el-icon-lock"
             show-password
           ></el-input>
         </el-form-item>
       </el-form>
     </div>
-    <div class="underInput">
+    <div class="options-container">
       <el-checkbox
         class="remember"
         v-model="checked"
       >记住密码</el-checkbox>
       <el-button
         @click="userLogin"
-        class="button"
+        class="login-button"
         type="primary"
         size="medium"
       >登录</el-button>
@@ -62,7 +63,9 @@ export default {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" }
+        ],
       },
     };
   },
@@ -71,7 +74,7 @@ export default {
       this.$refs["loginFormRef"].validate(async (valid) => {
         if (!valid) return;
         const data = await getUserInfo(this.loginForm);
-        console.log(data);
+        console.log(data.code);
         if (data.code !== 200) return this.$message.error("登录失败");
         this.$message.success("登录成功!");
 
@@ -91,50 +94,49 @@ export default {
 
 
 <style scoped>
-.head {
+
+.login {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.logo {
-  width: 100px;
-  position: relative;
-  top: 14vh;
-  left: -0.3vw;
+.head{
+  display: inline-flex;
+  flex-direction: column;
 }
 
-.wenzi {
-  font-size: 30px;
-  font-weight: 800;
-  position: relative;
-  top: 15vh;
+.head-title{
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: bold;
 }
 
-.input {
-  width: 350px;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 34vh;
-  margin-top: 15px;
-  margin-bottom: 10px;
+.head-logo {
+  width: 120px;
 }
 
-.underInput {
-  position: relative;
-  top: 32vh;
-  left: 50vw;
+.input-container{
+  margin-top: -35vh;
+  width: 25vw;
+  min-width:200px;
 }
 
-.button {
-  position: relative;
-  top: 5px;
-  left: 0.8%;
+.login-button{
+  margin-top: -10px;
 }
 
-.remember {
-  position: relative;
-  left: -10vw;
+.options-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width:25vw;
+  min-width:200px;
+  margin-top: -40vh;
 }
 </style>
