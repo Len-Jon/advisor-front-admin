@@ -1,9 +1,18 @@
-import axios from 'axios'
+import axios from "axios";
 
-const instance = axios.create({
-  baseURL: 'api/',
-})
+const request = axios.create({
+  baseURL: "api/",
+  timeout: 5000,
+});
 
-instance.interceptors.response.use(value => value.data)
+request.interceptors.response.use(
+  (res) => {
+    return res;
+  },
+  (error) => {
+    // resolve一个data对象，否则await得不到预期的data
+    return Promise.resolve({ code: 500, error });
+  }
+);
 
-export default instance
+export default request;
