@@ -1,5 +1,5 @@
-import instance from './axInstance'
+import request from "./axInstance";
 
 export const getUserInfo = (form) => {
-  return instance.post('login', form)
-}
+  return request.post("login", form);
+};
