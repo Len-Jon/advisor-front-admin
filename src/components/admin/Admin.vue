@@ -33,14 +33,12 @@
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside :width="isCollapse ? '115px' : '200px'">
+      <el-aside>
         <el-menu
           class="el-menu-vertical-demo"
-          :collapse="isCollapse"
           :router="true"
         >
           <el-menu-item
-            @click="saveNavState('/' + 'admin/statistic')"
             index="/admin/statistic"
           >
             <i class="el-icon-s-data"></i>
@@ -72,7 +70,6 @@
 export default {
   data() {
     return {
-      isCollapse: false,
       logoutVisible: false,
       nextLogoutVisible: false,
       activePath: "",
@@ -84,7 +81,7 @@ export default {
       console.log(data);
       if (data.code !== 200) return;
       this.logoutVisible = false;
-      this.$message.success("操作成功！");
+      this.$message.success("操作成功！即将返回登录页面");
       this.$router.push("/login");
     },
   },

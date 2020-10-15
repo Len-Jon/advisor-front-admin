@@ -80,7 +80,7 @@ export default {
             this.$router.push("/admin");
             break;
           case "ROLE_USER":
-            this.$router.push("/users")
+            this.$router.push("/user")
             break;
         }
       });
