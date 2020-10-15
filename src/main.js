@@ -4,6 +4,9 @@ import router from './components/router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
+// 引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 axios.defaults.baseURL = "api/"
 axios.defaults.withCredentials = true;

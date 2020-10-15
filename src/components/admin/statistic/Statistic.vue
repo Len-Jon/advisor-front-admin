@@ -19,7 +19,10 @@
       >导出完成人数</el-button>
     </div>
 
-    <div class="middle"></div>
+    <div
+      class="middle"
+      ref="middle"
+    ></div>
 
     <div class="bottom">
       <p class="advisorScore">各导员成绩详情</p>
@@ -60,6 +63,30 @@ export default {
       collegeNames: [],
       chosenValue: "所有学院",
       tableData: [],
+      echartOption: {
+        title: { text: "各学院完成人数" },
+        tooltip: {},
+        xAxis: {
+          data: [
+            "电子与光学工程学院\n、微电子学院",
+            "通信与信息工程学院",
+            "理学院",
+            "计算机学院、\n软件学院、网络空间安全学院",
+            "教育科学与技术学院",
+            "管理学院",
+          ],
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "完成人数",
+            type: "bar",
+            data: [],
+          },
+        ],
+      },
+      echartWidth: 0,
+      echartHeight: 0,
     };
   },
   computed: {
@@ -67,18 +94,47 @@ export default {
       return this.collegeNames.map((item) => ({ value: item, label: item }));
     },
   },
-  created: async function() {
-    let { data } = await this.$http.get("admin");
-    this.collegeNames.push("所有学院");
-    let tmp = JSON.parse(data.collegeNames);
-    this.collegeNames = this.collegeNames.concat(tmp);
-    console.log(this.collegeNames);
+  created: function() {
+    this.getCollegeList();
+    this.getTableData();
+    this.getEchartData();
+  },
+  mounted: function() {
+    this.drawTable();
+  },
+  methods: {
+    drawTable() {
+      let chart = this.$echarts.init(this.$refs.middle);
+      chart.setOption(this.echartOption);
+      console.log("echartwidth", chart.getWidth());
+    },
+    async getCollegeList() {
+      let { data } = await this.$http.get("admin");
+      this.collegeNames.push("所有学院");
+      let tmp = JSON.parse(data.collegeNames);
+      this.collegeNames = this.collegeNames.concat(tmp);
+      console.log(this.collegeNames);
+    },
 
-    // 获取表格数据
-    let res = await this.$http.get("api/changetable?collegeName=所有学院");
-    console.log("res:", res);
-    this.tableData = res.data.table;
-    console.log("tabledata", this.tableData);
+    async getTableData() {
+      // 获取表格数据
+      let res = await this.$http.get("api/changetable?collegeName=所有学院");
+      console.log("res:", res);
+      this.tableData = res.data.table;
+      console.log("tabledata", this.tableData);
+    },
+
+    async getEchartData() {
+      // 获取echart图表数据
+      let res = await this.$http.get("api/changechart?collegeName=所有学院");
+      console.log("echarts", res);
+      let data = res.data;
+      this.echartOption.series.forEach((item) => {
+        item.data = data.data;
+      });
+      this.echartOption.xAxis = data.labels;
+      console.log("echartsdata", this.echartOption);
+    },
   },
 };
 </script>
@@ -106,5 +162,10 @@ export default {
 
 .buttons {
   display: flex;
+}
+
+.middle {
+  width: 2000px;
+  height: 50vh;
 }
 </style>

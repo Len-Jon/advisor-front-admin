@@ -12,6 +12,8 @@ const Design = () => import('../admin/design/Design.vue')
 const uStatistic = () => import('../user/statistic/ustatistic.vue')
 const uAdvisor = () => import('../user/advisor/uadvisor.vue')
 
+const Student = () => import('../student/Student.vue')
+
 Vue.use(VueRouter)
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
@@ -36,7 +38,8 @@ const routes = [
       { path: 'statistic', component: uStatistic },
       { path: 'advisor', component: uAdvisor },
     ]
-  }
+  },
+  { path: '/student', component: Student },
 
 ]
 

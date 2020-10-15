@@ -34,7 +34,7 @@ export default {
       problem: {
         type: "",
         title: "",
-        options: null,
+        options: [],
       },
     };
   },
@@ -99,17 +99,21 @@ export default {
     for (let i = 0; i < designData.length; i++) {
       this.problem.type = designData[i].type === 1 ? "单选" : "问答";
       this.problem.title = designData[i].content;
-      let optionItem = {
-        choose: designData[i].optionEntities.content,
-        score: designData[i].optionEntities.score,
-      };
-      this.problem.options.push(optionItem);
       console.log("problemoptions", this.problem.options);
+
+      designData[i].optionEntities.forEach((item) => {
+        const optionItem = {
+          choose: item.content,
+          score: item.score,
+        };
+        this.problem.options.push(optionItem);
+      });
+
       this.problems.push(this.problem);
       this.problem = {
         type: "",
         title: "",
-        options: null,
+        options: [],
       };
     }
   },

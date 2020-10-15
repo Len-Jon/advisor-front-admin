@@ -5,14 +5,6 @@
     </el-header>
     <el-container>
       <el-aside :width="isCollapse ? '115px' : '200px'">
-        <!-- <el-radio-group :collapse="true" v-model="isCollapse" style="margin-bottom: 20px;">
-          <el-radio-button :label="false">
-            <i class="el-icon-s-unfold"></i>
-          </el-radio-button>
-          <el-radio-button :label="true">
-            <i class="el-icon-s-fold"></i>
-          </el-radio-button>
-        </el-radio-group> -->
         <el-menu default-active="1" class="el-menu-vertical-demo" :collapse="isCollapse">
           <el-menu-item index="1">
             <i class="el-icon-menu"></i>

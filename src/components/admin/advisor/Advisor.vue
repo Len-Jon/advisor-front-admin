@@ -40,6 +40,7 @@
           <el-button
             size="medium"
             type="primary"
+            @click="handleDetails"
           >详情</el-button>
           <el-button
             size="medium"
@@ -183,7 +184,7 @@ export default {
         advisor: "",
         college: "",
       },
-      editFormBindId: 0,
+      cilckedId: 0,
     };
   },
   created: async function() {
@@ -223,8 +224,9 @@ export default {
     handleEdit(scope) {
       this.editDialogVisible = true;
       this.editForm.id = scope.row.id;
+      this.cilckedId = scope.row.id;
       this.editForm.advisor = scope.row.advisor;
-      console.log(this.editFormBindId);
+      console.log(this.cilckedId);
     },
     async pushEditForm() {
       this.editDialogVisible = false;
@@ -235,6 +237,10 @@ export default {
       this.$message.success("操作成功！");
       this.$refs.editFormRef.resetFields();
       setTimeout("location.reload()", 2000);
+    },
+    async handleDetails() {
+      const res = await this.$http.get(`advisor/detail/${this.cilckedId}`);
+      console.log(res);
     },
   },
   computed: {
