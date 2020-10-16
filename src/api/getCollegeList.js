@@ -1,5 +1,5 @@
-import instance from './axInstance'
+import request from "./axInstance";
 
 export const getCollegeList = async () => {
-  return instance.get('college')
-}
+  return request.get("college");
+};

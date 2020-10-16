@@ -45,13 +45,7 @@ export default {
     handleAddProblem() {
       this.problems.push({
         ...this.problem,
-        options: [
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-        ],
+        options: new Array(5).fill().map(() => ({ choose: "", score: "" })),
       });
     },
     async handleSubmit() {
