@@ -64,29 +64,41 @@ export default {
       chosenValue: "所有学院",
       tableData: [],
       echartOption: {
-        title: { text: "各学院完成人数" },
+        title: { text: "各学院完成人数", left: "center" },
         tooltip: {},
-        xAxis: {
-          data: [
-            "电子与光学工程学院\n、微电子学院",
-            "通信与信息工程学院",
-            "理学院",
-            "计算机学院、\n软件学院、网络空间安全学院",
-            "教育科学与技术学院",
-            "管理学院",
-          ],
+        grid: {
+          //直角坐标系内绘图网格
+          // show: true, //是否显示直角坐标系网格。[ default: false ]
+          left: "15%", //grid 组件离容器左侧的距离。
+          // right: "30px",
+          // borderColor: "#c45455", //网格的边框颜色
+          // bottom: "20%", //
         },
-        yAxis: {},
+        yAxis: {
+          data: [],
+          axisLabel: {
+            //坐标轴刻度标签的相关设置。
+            interval: 0,
+            // formatter: (value, index) => {
+            //   // 格式化成月/日，只在第一个刻度显示年份
+            //   if (value.length >)
+            // },
+          },
+          inverse: true,
+        },
+        xAxis: { type: "value" },
         series: [
           {
             name: "完成人数",
             type: "bar",
+            barWidth: "50%",
             data: [],
           },
         ],
       },
       echartWidth: 0,
       echartHeight: 0,
+      echartInstance: null,
     };
   },
   computed: {
@@ -95,18 +107,18 @@ export default {
     },
   },
   created: function() {
+    console.log("cre");
     this.getCollegeList();
     this.getTableData();
-    this.getEchartData();
   },
   mounted: function() {
     this.drawTable();
+    this.getEchartData();
   },
   methods: {
     drawTable() {
-      let chart = this.$echarts.init(this.$refs.middle);
-      chart.setOption(this.echartOption);
-      console.log("echartwidth", chart.getWidth());
+      this.echartInstance = this.$echarts.init(this.$refs.middle);
+      this.echartInstance.setOption(this.echartOption);
     },
     async getCollegeList() {
       let { data } = await this.$http.get("admin");
@@ -119,21 +131,16 @@ export default {
     async getTableData() {
       // 获取表格数据
       let res = await this.$http.get("api/changetable?collegeName=所有学院");
-      console.log("res:", res);
       this.tableData = res.data.table;
-      console.log("tabledata", this.tableData);
     },
 
     async getEchartData() {
       // 获取echart图表数据
       let res = await this.$http.get("api/changechart?collegeName=所有学院");
-      console.log("echarts", res);
       let data = res.data;
-      this.echartOption.series.forEach((item) => {
-        item.data = data.data;
-      });
-      this.echartOption.xAxis = data.labels;
-      console.log("echartsdata", this.echartOption);
+      this.echartOption.series[0].data = data.data;
+      this.echartOption.yAxis.data = data.labels;
+      this.echartInstance.setOption(this.echartOption);
     },
   },
 };
@@ -165,7 +172,7 @@ export default {
 }
 
 .middle {
-  width: 2000px;
-  height: 50vh;
+  /* width: 80vw; */
+  height: 80vh;
 }
 </style>

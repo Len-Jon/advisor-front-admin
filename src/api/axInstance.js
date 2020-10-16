@@ -7,7 +7,8 @@ const request = axios.create({
 
 request.interceptors.response.use(
   (res) => {
-    return res;
+    console.log(res.data)
+    return res.data;
   },
   (error) => {
     // resolve一个data对象，否则await得不到预期的data
