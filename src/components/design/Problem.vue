@@ -41,7 +41,7 @@
         v-if="problemItem.type === '单选'"
         class="bottom-content"
       >
-        <Single :options.sync="problemItem.options" />
+        <Single :options="problemItem.options" />
       </div>
     </el-form>
   </div>
