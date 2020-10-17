@@ -16,9 +16,7 @@
       v-for="(item, index) in problems"
       :key="index"
       :index="index"
-      :type.sync="item.type"
-      :title.sync="item.title"
-      :options.sync="item.options"
+      :problemItem.sync="problems[index]"
       @handleDelete="handleProblemDelete"
     />
   </div>

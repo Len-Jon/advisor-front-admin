@@ -9,7 +9,7 @@
       <div class="mid-content">
         <el-form-item>
           <el-select
-            v-model="problemType"
+            v-model="problemItem.type"
             placeholder="请选择"
             width="50"
             @change="handleChange"
@@ -27,7 +27,7 @@
           <el-input
             class="tigan"
             placeholder="题干"
-            v-model="problemTitle"
+            v-model="problemItem.title"
           ></el-input>
         </el-form-item>
         <el-button
@@ -38,10 +38,10 @@
         >删除</el-button>
       </div>
       <div
-        v-if="problemType === '单选'"
+        v-if="problemItem.type === '单选'"
         class="bottom-content"
       >
-        <Single :options.sync="options" />
+        <Single :options.sync="problemItem.options" />
       </div>
     </el-form>
   </div>
@@ -51,7 +51,7 @@
 <script>
 import Single from "./Single.vue";
 export default {
-  props: ["type", "title", "options", "index"],
+  props: ["index", "problemItem"],
   components: {
     Single,
   },
@@ -63,32 +63,6 @@ export default {
         { value: "问答", label: "问答" },
       ],
     };
-  },
-  computed: {
-    problemType: {
-      get() {
-        return this.type;
-      },
-      set(val) {
-        this.$emit("update:type", val);
-      },
-    },
-    problemTitle: {
-      get() {
-        return this.title;
-      },
-      set(val) {
-        this.$emit("update:title", val);
-      },
-    },
-    problemOptions: {
-      get() {
-        return this.options;
-      },
-      set(val) {
-        this.$emit("update:options", val);
-      },
-    },
   },
   methods: {
     handleChange() {
