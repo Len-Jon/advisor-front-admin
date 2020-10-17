@@ -14,7 +14,7 @@
       @change="handleCollegeClicked"
     >
       <el-option
-        v-for="item in collegeList"
+        v-for="item in colleges"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -35,51 +35,64 @@
       </el-option>
     </el-select>
 
+    <!-- 题目 -->
+    <Problem
+      v-for="(item, index) in problems"
+      :key="index"
+      :rank="item.rank"
+      :type="item.type"
+      :problemId="item.id"
+      :content.sync="item.content"
+      :optionEntities.sync="item.optionEntities"
+    />
     <el-button type="primary">提交</el-button>
   </div>
 </template>
 
 
 <script>
+import Problem from "./Problem.vue";
+
 export default {
+  components: {
+    Problem,
+  },
   data() {
     return {
       colleges: [],
       advisors: [],
+      advisorList: [],
       selectedCollege: "",
       selectedAdvisor: "",
+      submitAdvisorId: -1,
+      problems: [],
+      submitForm: {
+        college: "",
+        advisor: "",
+        answerEntityList: [],
+      },
     };
   },
   async created() {
     const res = await this.$http.get("");
     console.log(res);
-    this.colleges = res.data.colleges;
-    // this.colleges = res.data.advisors;
-    console.log("computed", this.collegeList);
-  },
-  computed: {
-    collegeList() {
-      return this.colleges.map((item) => {
-        return {
-          value: item,
-          label: item,
-        };
-      });
-    },
-    advisorList() {
-      return this.colleges.map((item) => {
-        return {
-          value: item,
-          label: item,
-        };
-      });
-    },
+    this.problems = res.data.problems;
+    this.colleges = res.data.colleges.map((item) => {
+      return {
+        value: item,
+        label: item,
+      };
+    });
+    this.advisors = res.data.advisors;
   },
   methods: {
-    async handleCollegeClicked(val) {
-      console.log(val);
-      let res = await this.$http.get(`api/advisor/select?college=${val}`)
-      console.log(res)
+    handleCollegeClicked(val) {
+      this.advisorList = this.advisors
+        .filter((item) => item.college === val)
+        .map((item) => ({
+          value: item.advisor,
+          label: item.advisor,
+        }));
     },
   },
 };
