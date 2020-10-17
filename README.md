@@ -6,8 +6,6 @@
 git clone https://gitee.com/Len-Jon/advicetoadvisor.git
 ```
 
-进入`front-end`目录，下载相关依赖
-
 ```
 npm install
 ```

@@ -41,7 +41,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope)"
+            @click="handleEditBtnClicked(scope)"
             type="success"
             class="editBtn"
           >编辑</el-button>
@@ -98,10 +98,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="enable">
+        <el-form-item prop="enabled">
           <p>是否启用</p>
           <el-switch
-            v-model="enable"
+            v-model="enabled"
             active-color="#13ce66"
             inactive-color="#ff4949"
           >
@@ -155,7 +155,7 @@
         <el-form-item>
           <p>是否启用</p>
           <el-switch
-            v-model="enable"
+            v-model="enabled"
             active-color="#13ce66"
             inactive-color="#ff4949"
           >
@@ -169,7 +169,7 @@
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="editDialogVisible = false"
+          @click="handleEdit"
         >确 定</el-button>
       </div>
     </el-dialog>
@@ -197,8 +197,8 @@
 
 
 <script>
-import { getCollegeList } from "../../api/getCollegeList.js";
-import { setTimeout } from 'timers';
+import { getCollegeList } from "@/api/getCollegeList.js";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -209,16 +209,16 @@ export default {
       editForm: {
         username: "",
         password: "",
-        enable: true,
+        enabled: true,
         college: "",
       },
       addForm: {
         username: "",
         password: "",
-        enable: true,
+        enabled: true,
         college: "",
       },
-      enable: true,
+      enabled: true,
       collegeList: [],
       college: "",
       deleteDialogVisible: false,
@@ -270,9 +270,9 @@ export default {
     },
   },
   watch: {
-    enable(val) {
-      this.addForm.enable = val;
-      this.editForm.enable = val;
+    enabled(val) {
+      this.addForm.enabled = val;
+      this.editForm.enabled = val;
     },
     college(val) {
       this.addForm.college = val;
@@ -280,7 +280,7 @@ export default {
     },
   },
   methods: {
-    async handleEdit(scope) {
+    handleEditBtnClicked(scope) {
       console.log("scope:", scope);
       this.editDialogVisible = true;
       this.accountData = this.tableData;
@@ -290,27 +290,33 @@ export default {
       this.addDialogVisible = false;
       console.log(this.addForm);
       const data = await this.$http.post("api/account/add", this.addForm);
-      console.log('data', data);
+      console.log("data", data);
       this.$refs.addFormRef.resetFields();
 
-      if (data.code !== 200)
-        this.$message.error(data.data.msg);
-      setTimeout("location.reload()", 2000)
+      if (data.code !== 200) this.$message.error(data.data.msg);
+      setTimeout("location.reload()", 2000);
     },
     async handleDelete() {
       const data = await this.$http.post(
         `api/account/delete/${this.deleteUsername}`
       );
       console.log("deletedata", data);
-      if(data.code === 200)
-      this.$message.success('操作成功！')
+      if (data.code === 200) this.$message.success("操作成功！");
       this.deleteDialogVisible = false;
-      setTimeout("location.reload()", 2000)
+      setTimeout("location.reload()", 2000);
     },
     handleDeleteBtnClicked(scope) {
       this.deleteDialogVisible = true;
       this.deleteUsername = scope.row.username;
       console.log(this.deleteUsername);
+    },
+    async handleEdit() {
+      const res = await this.$http.post("api/account/edit", this.editForm);
+      console.log(res);
+      if (res.code !== 200) return this.$message.error("操作失败！");
+      this.$message.success("操作成功！");
+      this.editDialogVisible = false;
+      setTimeout("location.reload()", 2000);
     },
   },
 };

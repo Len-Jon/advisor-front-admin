@@ -63,9 +63,7 @@ export default {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
         ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" }
-        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
   },
@@ -74,7 +72,7 @@ export default {
       this.$refs["loginFormRef"].validate(async (valid) => {
         if (!valid) return;
         const data = await getUserInfo(this.loginForm);
-        console.log(data.code);
+        console.log(data);
         if (data.code !== 200) return this.$message.error("登录失败");
         this.$message.success("登录成功!");
 
@@ -83,7 +81,7 @@ export default {
             this.$router.push("/admin");
             break;
           case "ROLE_USER":
-            this.$router.push("/users")
+            this.$router.push("/user");
             break;
         }
       });
@@ -94,7 +92,6 @@ export default {
 
 
 <style scoped>
-
 .login {
   position: absolute;
   width: 100%;
@@ -105,12 +102,12 @@ export default {
   align-items: center;
 }
 
-.head{
+.head {
   display: inline-flex;
   flex-direction: column;
 }
 
-.head-title{
+.head-title {
   text-align: center;
   margin-bottom: 20px;
   font-size: 15px;
@@ -121,22 +118,22 @@ export default {
   width: 120px;
 }
 
-.input-container{
+.input-container {
   margin-top: -35vh;
   width: 25vw;
-  min-width:200px;
+  min-width: 200px;
 }
 
-.login-button{
+.login-button {
   margin-top: -10px;
 }
 
-.options-container{
+.options-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width:25vw;
-  min-width:200px;
+  width: 25vw;
+  min-width: 200px;
   margin-top: -40vh;
 }
 </style>

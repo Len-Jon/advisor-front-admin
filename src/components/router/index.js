@@ -3,11 +3,16 @@ import VueRouter from 'vue-router'
 
 const Admin = () => import('../admin/Admin.vue')
 const Login = () => import('../Login.vue')
-const Account = () => import('../account/Account.vue')
+const Account = () => import('../admin/account/Account.vue')
 const User = () => import('../user/User.vue')
-const Statistic = () => import('../statistic/Statistic.vue')
-const Advisor = () => import('../advisor/Advisor.vue')
-const Design = () => import('../design/Design.vue')
+const Statistic = () => import('../admin/statistic/Statistic.vue')
+const Advisor = () => import('../admin/advisor/Advisor.vue')
+const Design = () => import('../admin/design/Design.vue')
+
+const uStatistic = () => import('../user/statistic/ustatistic.vue')
+const uAdvisor = () => import('../user/advisor/uadvisor.vue')
+
+const Student = () => import('../student/Student.vue')
 
 Vue.use(VueRouter)
 
@@ -28,7 +33,13 @@ const routes = [
       { path: 'design', component: Design },
     ]
   },
-  { path: '/user', component: User, children: [] }
+  {
+    path: '/user', component: User, children: [
+      { path: 'statistic', component: uStatistic },
+      { path: 'advisor', component: uAdvisor },
+    ]
+  },
+  { path: '/student', component: Student },
 
 ]
 

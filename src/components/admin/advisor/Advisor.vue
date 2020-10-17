@@ -29,18 +29,18 @@
       <el-table-column
         prop="count"
         label="已完成人数"
-        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="operation"
         label="操作"
-        width="220"
+        width="300"
       >
         <template slot-scope="scope">
           <el-button
             size="medium"
             type="primary"
+            @click="handleDetail(scope)"
           >详情</el-button>
           <el-button
             size="medium"
@@ -50,7 +50,7 @@
           <el-button
             size="medium"
             type="danger"
-            @click="clickedId = scope.row.id;deleteDialogVisible = true"
+            @click="deleteDialogVisible = true;toDeleteId = scope.row.id"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -117,10 +117,16 @@
       title="编辑"
       :visible.sync="editDialogVisible"
     >
-      <el-form :model="editForm">
+      <el-form
+        :model="editForm"
+        ref="editFormRef"
+      >
         <el-form-item label="ID">
           <template>
-            <el-input v-bind:value="scope.row.id"></el-input>
+            <el-input
+              :value="editForm.id"
+              disabled
+            ></el-input>
           </template>
         </el-form-item>
         <el-form-item label="姓名">
@@ -128,7 +134,7 @@
         </el-form-item>
         <el-form-item label="学院"><br>
           <el-select
-            v-model="college"
+            v-model="editForm.college"
             placeholder="请选择"
           >
             <el-option
@@ -140,15 +146,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <p>是否启用</p>
-          <el-switch
-            v-model="enable"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
-          </el-switch>
-        </el-form-item>
       </el-form>
       <div
         slot="footer"
@@ -157,16 +154,36 @@
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="editDialogVisible = false"
+          @click="pushEditForm"
         >确 定</el-button>
       </div>
+    </el-dialog>
+
+    <!-- 详情弹框 -->
+    <el-dialog
+      title="详情"
+      :visible.sync="detailDialogVisible"
+      width="30%"
+      fullscreen
+    >
+      <span>这是一段信息</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="detailDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="detailDialogVisible = false"
+        >确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 
 <script>
-import { getCollegeList } from "../../api/getCollegeList.js";
+import { getCollegeList } from "@/api/getCollegeList.js";
 import { setTimeout } from "timers";
 export default {
   data() {
@@ -179,13 +196,52 @@ export default {
       },
       collegeList: [],
       college: "",
-      clickedId: 0,
+      toDeleteId: 0,
       deleteDialogVisible: false,
-      editDialogVisible: true,
+      editDialogVisible: false,
       editForm: {
         id: 0,
         advisor: "",
         college: "",
+      },
+      clickedId: 0,
+      detailDialogVisible: false,
+      echartOption: {
+        title: {
+          text: "各学院完成人数",
+          left: "30%",
+          textStyle: { fontWeight: 800, fontSize: 30 },
+        },
+        tooltip: {},
+        grid: {
+          //直角坐标系内绘图网格
+          // show: true, //是否显示直角坐标系网格。[ default: false ]
+          left: "15%", //grid 组件离容器左侧的距离。
+          // right: "30px",
+          // borderColor: "#c45455", //网格的边框颜色
+          // bottom: "20%", //
+        },
+        yAxis: {
+          data: [],
+          axisLabel: {
+            //坐标轴刻度标签的相关设置。
+            interval: 0,
+            // formatter: (value, index) => {
+            //   // 格式化成月/日，只在第一个刻度显示年份
+            //   if (value.length >)
+            // },
+          },
+          inverse: true,
+        },
+        xAxis: { type: "value" },
+        series: [
+          {
+            name: "完成人数",
+            type: "bar",
+            barWidth: "50%",
+            data: [],
+          },
+        ],
       },
     };
   },
@@ -193,7 +249,7 @@ export default {
     let data = await this.$http.get("advisor");
     if (data.code !== 200) this.$message.error("发生错误！");
     this.advisors = data.data;
-    console.log(data);
+    console.log(this.advisors);
 
     // 获取学院列表
     let res = await getCollegeList();
@@ -215,16 +271,41 @@ export default {
     },
     async handleDelete() {
       const data = await this.$http.post(
-        `api/advisor/delete/${this.clickedId}`
+        `api/advisor/delete/${this.toDeleteId}`
       );
-      console.log(data);
+      console.log("delete", data);
       if (data.code !== 200) this.$message.error(data.data.msg);
       this.deleteDialogVisible = false;
       this.$message.success("操作成功！");
       setTimeout("location.reload()", 2000);
     },
     handleEdit(scope) {
+      this.editDialogVisible = true;
+      this.editForm.id = scope.row.id;
+      this.clickedId = scope.row.id;
       this.editForm.advisor = scope.row.advisor;
+      console.log(this.clickedId);
+    },
+    handleDetail(scope) {
+      this.detailDialogVisible = true;
+      this.clickedId = scope.row.id;
+      console.log(scope);
+      let data = this.getDetailData;
+      console.log(data);
+    },
+    async pushEditForm() {
+      this.editDialogVisible = false;
+      console.log(this.editForm);
+      const data = await this.$http.post("api/advisor/edit", this.editForm);
+      console.log(data);
+      if (data.code !== 200) return this.$message.error(data.data.msg);
+      this.$message.success("操作成功！");
+      this.$refs.editFormRef.resetFields();
+      setTimeout("location.reload()", 2000);
+    },
+    async getDetailData() {
+      const res = await this.$http.get(`advisor/detail/${this.clickedId}`);
+      return res;
     },
   },
   computed: {
@@ -237,12 +318,6 @@ export default {
 
 
 <style>
-.main {
-  position: relative;
-  /* left: 13%; */
-  margin-left: 13%;
-}
-
 .el-table {
   margin-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
@@ -254,5 +329,11 @@ export default {
 
 .el-table th {
   text-align: center;
+}
+</style>
+
+<style scoped>
+.main {
+  margin-left: 13%;
 }
 </style>

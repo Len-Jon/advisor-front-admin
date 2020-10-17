@@ -114,7 +114,6 @@ p {
 
 .form {
   width: 90%;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }

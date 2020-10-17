@@ -33,28 +33,37 @@
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside :width="isCollapse ? '115px' : '200px'">
+      <el-aside>
         <el-menu
           class="el-menu-vertical-demo"
-          :collapse="isCollapse"
           :router="true"
+          :default-active="activePath"
         >
           <el-menu-item
-            @click="saveNavState('/' + 'admin/statistic')"
             index="/admin/statistic"
+            @click="saveNavState('/admin/statistic')"
           >
             <i class="el-icon-s-data"></i>
             <span slot="title">统计面板</span>
           </el-menu-item>
-          <el-menu-item index="/admin/account">
+          <el-menu-item
+            index="/admin/account"
+            @click="saveNavState('/admin/account')"
+          >
             <i class="el-icon-menu"></i>
             <span slot="title">账号管理</span>
           </el-menu-item>
-          <el-menu-item index="/admin/advisor">
+          <el-menu-item
+            index="/admin/advisor"
+            @click="saveNavState('/admin/advisor')"
+          >
             <i class="el-icon-user-solid"></i>
             <span slot="title">导员管理</span>
           </el-menu-item>
-          <el-menu-item index="/admin/design">
+          <el-menu-item
+            index="/admin/design"
+            @click="saveNavState('/admin/design')"
+          >
             <i class="el-icon-setting"></i>
             <span slot="title">设计问卷</span>
           </el-menu-item>
@@ -72,9 +81,9 @@
 export default {
   data() {
     return {
-      isCollapse: false,
       logoutVisible: false,
       nextLogoutVisible: false,
+      // 激活链接
       activePath: "",
     };
   },
@@ -84,8 +93,12 @@ export default {
       console.log(data);
       if (data.code !== 200) return;
       this.logoutVisible = false;
-      this.$message.success("操作成功！");
+      this.$message.success("操作成功！即将返回登录页面");
       this.$router.push("/login");
+    },
+    // 保存链接激活状态
+    saveNavState(activePath) {
+      window.sessionStorage.setItem("activePath", activePath);
     },
   },
   // beforeCreate: async function() {
@@ -101,6 +114,8 @@ export default {
   created: async function() {
     const data = await this.$http.get("admin");
     console.log(data);
+
+    this.activePath = window.sessionStorage.getItem("activePath");
   },
 };
 </script>

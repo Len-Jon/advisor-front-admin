@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div>
+    <div class="btns">
       <el-button
         size="medium"
         type="primary"
@@ -32,7 +32,7 @@ export default {
       problem: {
         type: "",
         title: "",
-        options: null,
+        options: [],
       },
     };
   },
@@ -72,18 +72,49 @@ export default {
         }
       );
       console.log(submitData);
+      const res = await this.$http.post("api/design", submitData);
+      console.log(res);
+      if (res.code !== 200) return this.$message.error("提交失败！");
+      this.$message.success("提交成功！");
+      setTimeout("location.reload()", 2000);
     },
     handleProblemDelete(index) {
       this.problems.splice(index, 1);
     },
+  },
+  created: async function() {
+    const res = await this.$http.get("design");
+    console.log("designres", res);
+    if (res.code !== 200) return this.$message.error("获取问卷信息失败！");
+    let designData = res.data;
+    if (designData.length === 0) return;
+    for (let i = 0; i < designData.length; i++) {
+      this.problem.type = designData[i].type === 1 ? "单选" : "问答";
+      this.problem.title = designData[i].content;
+      console.log("problemoptions", this.problem.options);
+
+      designData[i].optionEntities.forEach((item) => {
+        const optionItem = {
+          choose: item.content,
+          score: item.score,
+        };
+        this.problem.options.push(optionItem);
+      });
+
+      this.problems.push(this.problem);
+      this.problem = {
+        type: "",
+        title: "",
+        options: [],
+      };
+    }
   },
 };
 </script>
 
 
 <style scoped>
-.main {
-  /* position: relative; */
-  margin: 0 auto;
+.btns {
+  margin-left: 13%;
 }
 </style>
