@@ -16,9 +16,7 @@
       v-for="(item, index) in problems"
       :key="index"
       :index="index"
-      :type.sync="item.type"
-      :title.sync="item.title"
-      :options.sync="item.options"
+      :problemItem.sync="problems[index]"
       @handleDelete="handleProblemDelete"
     />
   </div>
@@ -45,13 +43,7 @@ export default {
     handleAddProblem() {
       this.problems.push({
         ...this.problem,
-        options: [
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-          { choose: "", score: "" },
-        ],
+        options: new Array(5).fill().map(() => ({ choose: "", score: "" })),
       });
     },
     async handleSubmit() {
