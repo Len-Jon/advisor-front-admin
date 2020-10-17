@@ -16,6 +16,7 @@
       <el-button
         size="medium"
         type="primary"
+        @click="handleExportCollegeCount"
       >导出完成人数</el-button>
     </div>
 
@@ -30,10 +31,12 @@
         <el-button
           size="medium"
           type="primary"
+          @click="handleExportAdvisorScore"
         >导出导员成绩</el-button>
         <el-button
           size="medium"
           type="success"
+          @click="handleExportEvaluate"
         >导出主观回答</el-button>
       </div>
 
@@ -57,6 +60,8 @@
 
 
 <script>
+// import XLSX from 'xlsx'
+
 export default {
   data() {
     return {
@@ -64,7 +69,11 @@ export default {
       chosenValue: "所有学院",
       tableData: [],
       echartOption: {
-        title: { text: "各学院完成人数", left: "center" },
+        title: {
+          text: "各学院完成人数",
+          left: "30%",
+          textStyle: { fontWeight: 800, fontSize: 30 },
+        },
         tooltip: {},
         grid: {
           //直角坐标系内绘图网格
@@ -107,13 +116,14 @@ export default {
     },
   },
   created: function() {
-    console.log("cre");
     this.getCollegeList();
     this.getTableData();
   },
   mounted: function() {
     this.drawTable();
     this.getEchartData();
+    console.log("option", this.echartOption);
+    this.getcollegeListWithLF();
   },
   methods: {
     drawTable() {
@@ -134,6 +144,13 @@ export default {
       this.tableData = res.data.table;
     },
 
+    async getcollegeListWithLF() {
+      let res = await this.$http.get("collegeListWithLF");
+      console.log("lf换行", res);
+      this.echartOption.yAxis.data = res.data;
+      this.echartInstance.setOption(this.echartOption);
+    },
+
     async getEchartData() {
       // 获取echart图表数据
       let res = await this.$http.get("api/changechart?collegeName=所有学院");
@@ -141,6 +158,16 @@ export default {
       this.echartOption.series[0].data = data.data;
       this.echartOption.yAxis.data = data.labels;
       this.echartInstance.setOption(this.echartOption);
+    },
+    async handleExportCollegeCount() {
+      const res = await this.$http.get("export/authority");
+      console.log(res);
+    },
+    async handleExportAdvisorScore() {
+      await this.$http.get("export/advisorScore");
+    },
+    async handleExportEvaluate() {
+      await this.$http.get("export/advisorEvaluate");
     },
   },
 };
@@ -173,6 +200,6 @@ export default {
 
 .middle {
   /* width: 80vw; */
-  height: 80vh;
+  height: 100vh;
 }
 </style>

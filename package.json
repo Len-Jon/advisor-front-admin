@@ -14,7 +14,8 @@
     "element-ui": "^2.13.2",
     "jsonp": "^0.2.1",
     "vue": "^2.6.11",
-    "vue-router": "^3.4.5"
+    "vue-router": "^3.4.5",
+    "xlsx": "^0.16.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -40,7 +40,7 @@
           <el-button
             size="medium"
             type="primary"
-            @click="handleDetails"
+            @click="handleDetail(scope)"
           >详情</el-button>
           <el-button
             size="medium"
@@ -158,6 +158,26 @@
         >确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 详情弹框 -->
+    <el-dialog
+      title="详情"
+      :visible.sync="detailDialogVisible"
+      width="30%"
+      fullscreen
+    >
+      <span>这是一段信息</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="detailDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="detailDialogVisible = false"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -184,7 +204,45 @@ export default {
         advisor: "",
         college: "",
       },
-      cilckedId: 0,
+      clickedId: 0,
+      detailDialogVisible: false,
+      echartOption: {
+        title: {
+          text: "各学院完成人数",
+          left: "30%",
+          textStyle: { fontWeight: 800, fontSize: 30 },
+        },
+        tooltip: {},
+        grid: {
+          //直角坐标系内绘图网格
+          // show: true, //是否显示直角坐标系网格。[ default: false ]
+          left: "15%", //grid 组件离容器左侧的距离。
+          // right: "30px",
+          // borderColor: "#c45455", //网格的边框颜色
+          // bottom: "20%", //
+        },
+        yAxis: {
+          data: [],
+          axisLabel: {
+            //坐标轴刻度标签的相关设置。
+            interval: 0,
+            // formatter: (value, index) => {
+            //   // 格式化成月/日，只在第一个刻度显示年份
+            //   if (value.length >)
+            // },
+          },
+          inverse: true,
+        },
+        xAxis: { type: "value" },
+        series: [
+          {
+            name: "完成人数",
+            type: "bar",
+            barWidth: "50%",
+            data: [],
+          },
+        ],
+      },
     };
   },
   created: async function() {
@@ -224,9 +282,16 @@ export default {
     handleEdit(scope) {
       this.editDialogVisible = true;
       this.editForm.id = scope.row.id;
-      this.cilckedId = scope.row.id;
+      this.clickedId = scope.row.id;
       this.editForm.advisor = scope.row.advisor;
-      console.log(this.cilckedId);
+      console.log(this.clickedId);
+    },
+    handleDetail(scope) {
+      this.detailDialogVisible = true;
+      this.clickedId = scope.row.id;
+      console.log(scope);
+      let data = this.getDetailData;
+      console.log(data);
     },
     async pushEditForm() {
       this.editDialogVisible = false;
@@ -238,9 +303,9 @@ export default {
       this.$refs.editFormRef.resetFields();
       setTimeout("location.reload()", 2000);
     },
-    async handleDetails() {
-      const res = await this.$http.get(`advisor/detail/${this.cilckedId}`);
-      console.log(res);
+    async getDetailData() {
+      const res = await this.$http.get(`advisor/detail/${this.clickedId}`);
+      return res;
     },
   },
   computed: {
@@ -253,12 +318,6 @@ export default {
 
 
 <style>
-.main {
-  position: relative;
-  /* left: 13%; */
-  margin-left: 13%;
-}
-
 .el-table {
   margin-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
@@ -270,5 +329,11 @@ export default {
 
 .el-table th {
   text-align: center;
+}
+</style>
+
+<style scoped>
+.main {
+  margin-left: 13%;
 }
 </style>
