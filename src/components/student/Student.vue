@@ -25,6 +25,7 @@
     <el-select
       v-model="selectedAdvisor"
       placeholder="请选择辅导员"
+      @change="handleAdvisorClicked"
     >
       <el-option
         v-for="item in advisorList"
@@ -44,8 +45,12 @@
       :problemId="item.id"
       :content.sync="item.content"
       :optionEntities.sync="item.optionEntities"
+      @updateAnswer="handleAnswerChange"
     />
-    <el-button type="primary">提交</el-button>
+    <el-button
+      type="primary"
+      @click="submitDesign"
+    >提交</el-button>
   </div>
 </template>
 
@@ -70,20 +75,21 @@ export default {
         college: "",
         advisor: "",
         answerEntityList: [],
+        _csrf: "_csrf",
       },
     };
   },
   async created() {
     const res = await this.$http.get("");
     console.log(res);
-    this.problems = res.data.problems;
-    this.colleges = res.data.colleges.map((item) => {
-      return {
-        value: item,
-        label: item,
-      };
-    });
-    this.advisors = res.data.advisors;
+    // this.problems = res.data.problems;
+    // this.colleges = res.data.colleges.map((item) => {
+    //   return {
+    //     value: item,
+    //     label: item,
+    //   };
+    // });
+    // this.advisors = res.data.advisors;
   },
   methods: {
     handleCollegeClicked(val) {
@@ -93,6 +99,31 @@ export default {
           value: item.advisor,
           label: item.advisor,
         }));
+      this.submitForm.college = val;
+    },
+    handleAdvisorClicked(val) {
+      this.submitForm.advisor = val;
+    },
+    handleAnswerChange({ problemId, content }) {
+      const isExistBefore = this.submitForm.answerEntityList.find(
+        (item) => item.problemId === problemId
+      );
+      if (!isExistBefore) {
+        const newAnswer = {
+          problemId,
+          content,
+        };
+        this.submitForm.answerEntityList.push(newAnswer);
+      } else {
+        isExistBefore.content = content;
+      }
+    },
+    async submitDesign() {
+      let res = await this.$http.post("submit", this.submitForm);
+      // console.log(res);
+      if (res !== 200)
+        return this.$message.error(res.data.title, res.data.content);
+      return this.$message.success("提交成功，感谢您参与本次调查！");
     },
   },
 };

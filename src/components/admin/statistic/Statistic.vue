@@ -60,7 +60,7 @@
 
 
 <script>
-// import XLSX from 'xlsx'
+import exportMethod from "@/api/export.js";
 
 export default {
   data() {
@@ -121,13 +121,17 @@ export default {
   },
   mounted: function() {
     this.drawTable();
-    this.getEchartData();
     console.log("option", this.echartOption);
-    this.getcollegeListWithLF();
   },
   methods: {
-    drawTable() {
+    async drawTable() {
       this.echartInstance = this.$echarts.init(this.$refs.middle);
+      const { data } = await this.$http.get(
+        "api/changechart?collegeName=所有学院"
+      );
+      this.echartOption.series[0].data = data.data;
+      const res = await this.$http.get("collegeListWithLF");
+      this.echartOption.yAxis.data = res.data;
       this.echartInstance.setOption(this.echartOption);
     },
     async getCollegeList() {
@@ -144,30 +148,29 @@ export default {
       this.tableData = res.data.table;
     },
 
-    async getcollegeListWithLF() {
-      let res = await this.$http.get("collegeListWithLF");
-      console.log("lf换行", res);
-      this.echartOption.yAxis.data = res.data;
-      this.echartInstance.setOption(this.echartOption);
-    },
-
-    async getEchartData() {
-      // 获取echart图表数据
-      let res = await this.$http.get("api/changechart?collegeName=所有学院");
-      let data = res.data;
-      this.echartOption.series[0].data = data.data;
-      this.echartOption.yAxis.data = data.labels;
-      this.echartInstance.setOption(this.echartOption);
-    },
     async handleExportCollegeCount() {
-      const res = await this.$http.get("export/authority");
-      console.log(res);
+      let myObj = {
+        method: "get",
+        url: "export/collegeCount",
+        fileName: "完成人数.xlsx",
+      };
+      exportMethod(myObj);
     },
     async handleExportAdvisorScore() {
-      await this.$http.get("export/advisorScore");
+      let myObj = {
+        method: "get",
+        url: "export/advisorScore",
+        fileName: "导员成绩.xlsx",
+      };
+      exportMethod(myObj);
     },
     async handleExportEvaluate() {
-      await this.$http.get("export/advisorEvaluate");
+      let myObj = {
+        method: "get",
+        url: "export/advisorEvaluate",
+        fileName: "主观回答.xlsx",
+      };
+      exportMethod(myObj);
     },
   },
 };

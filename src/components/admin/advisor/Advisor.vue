@@ -161,12 +161,18 @@
 
     <!-- 详情弹框 -->
     <el-dialog
-      title="详情"
+      title="导员详情"
       :visible.sync="detailDialogVisible"
       width="30%"
       fullscreen
+      center
     >
-      <span>这是一段信息</span>
+      <div
+        class="chart"
+        v-for="chart in echartsInstances"
+        :key="chart.id"
+        :ref="chart.title"
+      />
       <span
         slot="footer"
         class="dialog-footer"
@@ -206,43 +212,48 @@ export default {
       },
       clickedId: 0,
       detailDialogVisible: false,
-      echartOption: {
-        title: {
-          text: "各学院完成人数",
-          left: "30%",
-          textStyle: { fontWeight: 800, fontSize: 30 },
-        },
-        tooltip: {},
-        grid: {
-          //直角坐标系内绘图网格
-          // show: true, //是否显示直角坐标系网格。[ default: false ]
-          left: "15%", //grid 组件离容器左侧的距离。
-          // right: "30px",
-          // borderColor: "#c45455", //网格的边框颜色
-          // bottom: "20%", //
-        },
-        yAxis: {
-          data: [],
-          axisLabel: {
-            //坐标轴刻度标签的相关设置。
-            interval: 0,
-            // formatter: (value, index) => {
-            //   // 格式化成月/日，只在第一个刻度显示年份
-            //   if (value.length >)
-            // },
-          },
-          inverse: true,
-        },
-        xAxis: { type: "value" },
-        series: [
-          {
-            name: "完成人数",
-            type: "bar",
-            barWidth: "50%",
-            data: [],
-          },
-        ],
+      detailForm: {
+        advisor: "",
+        college: "",
       },
+      echartsInstances: [],
+      // echartOption: {
+      //   title: {
+      //     text: "各学院完成人数",
+      //     left: "30%",
+      //     textStyle: { fontWeight: 600, fontSize: 10 },
+      //   },
+      //   tooltip: {},
+      //   grid: {
+      //     //直角坐标系内绘图网格
+      //     // show: true, //是否显示直角坐标系网格。[ default: false ]
+      //     left: "50%", //grid 组件离容器左侧的距离。
+      //     // right: "30px",
+      //     // borderColor: "#c45455", //网格的边框颜色
+      //     // bottom: "20%", //
+      //   },
+      //   yAxis: {
+      //     data: [],
+      //     axisLabel: {
+      //       //坐标轴刻度标签的相关设置。
+      //       interval: 0,
+      //       // formatter: (value, index) => {
+      //       //   // 格式化成月/日，只在第一个刻度显示年份
+      //       //   if (value.length >)
+      //       // },
+      //     },
+      //     inverse: true,
+      //   },
+      //   xAxis: { type: "value" },
+      //   series: [
+      //     {
+      //       name: "完成人数",
+      //       type: "bar",
+      //       barWidth: "50%",
+      //       data: [],
+      //     },
+      //   ],
+      // },
     };
   },
   created: async function() {
@@ -269,6 +280,7 @@ export default {
       this.$message.success("操作成功！");
       setTimeout("location.reload()", 2000);
     },
+
     async handleDelete() {
       const data = await this.$http.post(
         `api/advisor/delete/${this.toDeleteId}`
@@ -279,6 +291,7 @@ export default {
       this.$message.success("操作成功！");
       setTimeout("location.reload()", 2000);
     },
+
     handleEdit(scope) {
       this.editDialogVisible = true;
       this.editForm.id = scope.row.id;
@@ -286,12 +299,57 @@ export default {
       this.editForm.advisor = scope.row.advisor;
       console.log(this.clickedId);
     },
-    handleDetail(scope) {
+
+    async handleDetail(scope) {
       this.detailDialogVisible = true;
       this.clickedId = scope.row.id;
-      console.log(scope);
-      let data = this.getDetailData;
-      console.log(data);
+      const { data } = await this.getDetailData();
+      data.problems.forEach((problem) => {
+        const chart = {
+          id: problem.id,
+          instance: null,
+          options: null,
+          data: data.data[problem.id],
+          labels: data.labels[problem.id],
+          title: problem.content,
+        };
+        this.echartsInstances.push(chart);
+      });
+      this.$nextTick().then(() => {
+        console.log(this.echartsInstances);
+        this.echartsInstances.forEach((chart) => {
+          const { title } = chart;
+          console.log(this.$refs[title]);
+          chart.instance = this.$echarts.init(this.$refs[title][0]);
+          chart.options = {
+            title: {
+              text: chart.title,
+              left: "50%",
+              textStyle: { fontWeight: 400, fontSize: 20 },
+            },
+            tooltip: {},
+            grid: {
+              left: "25%", //grid 组件离容器左侧的距离。
+            },
+            yAxis: {
+              data: JSON.parse(chart.labels),
+              axisLabel: {
+                interval: 0,
+              },
+            },
+            xAxis: { type: "value" },
+            series: [
+              {
+                name: "完成人数",
+                type: "bar",
+                barWidth: "50%",
+                data: JSON.parse(chart.data),
+              },
+            ],
+          };
+          chart.instance.setOption(chart.options);
+        });
+      });
     },
     async pushEditForm() {
       this.editDialogVisible = false;
@@ -335,5 +393,9 @@ export default {
 <style scoped>
 .main {
   margin-left: 13%;
+}
+.chart {
+  width: 80%;
+  height: 50vh;
 }
 </style>
