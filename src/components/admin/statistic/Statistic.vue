@@ -41,7 +41,7 @@
         >导出主观回答</el-button>
       </div>
 
-      <el-table :data="tableData">
+      <el-table :data="tableData" v-show="hasGetTableData">
         <el-table-column
           prop="college"
           label="学院"
@@ -50,13 +50,11 @@
           prop="advisor"
           label="辅导员"
         ></el-table-column>
-
         
         <el-table-column
-          v-for="(item, index) in tableData[0].score"
+          v-for="(item, index) in scoreList"
           :key="index"
-          :prop="score"
-          :label="index+1"
+          :label="String(index+1)"
           :formatter="scoreFormat"
         ></el-table-column>
 
@@ -79,6 +77,8 @@ export default {
       collegeNames: [],
       chosenValue: "所有学院",
       tableData: [],
+      scoreList: [],
+      hasGetTableData: false,
       echartOption: {
         title: {
           text: "各学院完成人数",
@@ -137,7 +137,7 @@ export default {
   },
   methods: {
     scoreFormat(row, column) {
-      return row.score[column.label-1]
+      return row.score[Number(column.label - 1)]
     },
     async drawTable() {
       this.echartInstance = this.$echarts.init(this.$refs.middle);
@@ -171,6 +171,8 @@ export default {
       );
       console.log(res);
       this.tableData = res.data.table;
+      this.scoreList = this.tableData[0].score
+      this.hasGetTableData = true
     },
 
     async handleExportCollegeCount() {
