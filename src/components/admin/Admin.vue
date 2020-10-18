@@ -114,7 +114,7 @@ export default {
   created: async function() {
     const data = await this.$http.get("admin");
     console.log(data);
-
+    // 保存侧边栏点击状态
     this.activePath = window.sessionStorage.getItem("activePath");
   },
 };

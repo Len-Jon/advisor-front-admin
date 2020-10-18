@@ -32,12 +32,21 @@
     </el-header>
     <el-container>
       <el-aside>
-        <el-menu router>
-          <el-menu-item index="/user/statistic">
+        <el-menu
+          router
+          :default-active="activePath"
+        >
+          <el-menu-item
+            index="/user/statistic"
+            @click="saveNavState('/user/statistic')"
+          >
             <i class="el-icon-s-data"></i>
             <span slot="title">统计面板</span>
           </el-menu-item>
-          <el-menu-item index="/user/advisor">
+          <el-menu-item
+            index="/user/advisor"
+            @click="saveNavState('/user/advisor')"
+          >
             <i class="el-icon-menu"></i>
             <span slot="title">导员详情</span>
           </el-menu-item>
@@ -56,6 +65,7 @@ export default {
   data() {
     return {
       logoutVisible: false,
+      activePath: "",
     };
   },
   methods: {
@@ -63,10 +73,19 @@ export default {
       const data = await this.$http.get("logout");
       console.log(data);
       if (data.code !== 200) return this.$message.error("操作失败！");
-      this.$message.success('操作成功！即将返回登录页面')
+      this.$message.success("操作成功！即将返回登录页面");
       this.logoutVisible = false;
       this.$router.push("/login");
     },
+    // 保存链接激活状态
+    saveNavState(activePath) {
+      window.sessionStorage.setItem("activePath", activePath);
+    },
+  },
+  created: function() {
+    // 保存侧边栏点击状态
+    this.activePath = window.sessionStorage.getItem("activePath");
+    console.log(this.activePath);
   },
 };
 </script>

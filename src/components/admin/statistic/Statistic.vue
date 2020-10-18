@@ -4,6 +4,7 @@
       <el-select
         v-model="chosenValue"
         placeholder="请选择"
+        @change="handleClick"
       >
         <el-option
           v-for="item in college"
@@ -49,8 +50,16 @@
           prop="advisor"
           label="辅导员"
         ></el-table-column>
+
         <el-table-column
-          prop="score"
+          v-for="(item, index) in tableData"
+          :key="index"
+          :label="tableData[index].rank"
+          :prop="item.score[index]"
+        ></el-table-column>
+
+        <el-table-column
+          prop="totalScore"
           label="总分"
         ></el-table-column>
       </el-table>
@@ -78,7 +87,7 @@ export default {
         grid: {
           //直角坐标系内绘图网格
           // show: true, //是否显示直角坐标系网格。[ default: false ]
-          left: "15%", //grid 组件离容器左侧的距离。
+          left: "14%", //grid 组件离容器左侧的距离。
           // right: "30px",
           // borderColor: "#c45455", //网格的边框颜色
           // bottom: "20%", //
@@ -108,6 +117,7 @@ export default {
       echartWidth: 0,
       echartHeight: 0,
       echartInstance: null,
+      isSingleCollege: false,
     };
   },
   computed: {
@@ -127,11 +137,18 @@ export default {
     async drawTable() {
       this.echartInstance = this.$echarts.init(this.$refs.middle);
       const { data } = await this.$http.get(
-        "api/changechart?collegeName=所有学院"
+        `api/changechart?collegeName=${this.chosenValue}`
       );
+      if (this.chosenValue === "所有学院") {
+        const res = await this.$http.get("collegeListWithLF");
+        this.echartOption.yAxis.data = res.data;
+        this.echartOption.series[0].barWidth = "50%";
+        this.echartInstance.resize({ height: "800vh" });
+      } else {
+        this.echartOption.yAxis.data = [this.chosenValue];
+        this.echartInstance.resize({ height: "400vh" });
+      }
       this.echartOption.series[0].data = data.data;
-      const res = await this.$http.get("collegeListWithLF");
-      this.echartOption.yAxis.data = res.data;
       this.echartInstance.setOption(this.echartOption);
     },
     async getCollegeList() {
@@ -144,7 +161,10 @@ export default {
 
     async getTableData() {
       // 获取表格数据
-      let res = await this.$http.get("api/changetable?collegeName=所有学院");
+      let res = await this.$http.get(
+        `api/changetable?collegeName=${this.chosenValue}`
+      );
+      console.log(res);
       this.tableData = res.data.table;
     },
 
@@ -171,6 +191,11 @@ export default {
         fileName: "主观回答.xlsx",
       };
       exportMethod(myObj);
+    },
+    async handleClick() {
+      console.log(this.chosenValue);
+      this.drawTable();
+      this.getTableData();
     },
   },
 };
@@ -203,6 +228,6 @@ export default {
 
 .middle {
   /* width: 80vw; */
-  height: 100vh;
+  height: 90vh;
 }
 </style>

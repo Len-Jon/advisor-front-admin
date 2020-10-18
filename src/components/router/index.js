@@ -13,6 +13,7 @@ const uStatistic = () => import('../user/statistic/ustatistic.vue')
 const uAdvisor = () => import('../user/advisor/uadvisor.vue')
 
 const Student = () => import('../student/Student.vue')
+const Fail = () => import('../student/Fail.vue')
 
 Vue.use(VueRouter)
 
@@ -23,7 +24,6 @@ VueRouter.prototype.push = function push(location) {
 }
 
 const routes = [
-  { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   {
     path: '/admin', component: Admin, children: [
@@ -39,7 +39,11 @@ const routes = [
       { path: 'advisor', component: uAdvisor },
     ]
   },
-  { path: '/student', component: Student },
+  {
+    path: '/student', component: Student, children: [
+      { path: 'fail', component: Fail }
+    ]
+  },
 
 ]
 
