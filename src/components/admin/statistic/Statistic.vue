@@ -51,11 +51,13 @@
           label="辅导员"
         ></el-table-column>
 
+        
         <el-table-column
-          v-for="(item, index) in tableData"
+          v-for="(item, index) in tableData[0].score"
           :key="index"
-          :label="tableData[index].rank"
-          :prop="item.score[index]"
+          :prop="score"
+          :label="index+1"
+          :formatter="scoreFormat"
         ></el-table-column>
 
         <el-table-column
@@ -134,6 +136,9 @@ export default {
     console.log("option", this.echartOption);
   },
   methods: {
+    scoreFormat(row, column) {
+      return row.score[column.label-1]
+    },
     async drawTable() {
       this.echartInstance = this.$echarts.init(this.$refs.middle);
       const { data } = await this.$http.get(
