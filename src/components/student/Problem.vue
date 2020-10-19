@@ -18,10 +18,15 @@
     <!-- 问答题 -->
     <div v-else>
       <span>{{rank}}、{{content}}</span>
-      <el-input
-        class="wenda"
-        v-model="wendaContent"
-      ></el-input>
+      <el-form :rules="rules">
+        <el-form-item prop="wenda">
+          <el-input
+            type="textarea"
+            class="wenda"
+            v-model="wendaContent"
+          ></el-input>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
@@ -34,6 +39,9 @@ export default {
     return {
       selectedOption: "",
       wendaContent: "",
+      rules: {
+        wenda: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+      },
     };
   },
   watch: {
@@ -52,7 +60,6 @@ export default {
       });
     },
   },
-  computed: {},
 };
 </script>
 
@@ -62,6 +69,7 @@ export default {
   width: 90%;
   margin-left: 50%;
   transform: translateX(-50%);
+  margin-bottom: 30px;
 }
 
 .el-radio-group {
@@ -72,18 +80,12 @@ export default {
 .el-radio {
   width: 100%;
   display: flex;
-  margin-top: 6px;
+  margin-top: 10px;
 }
 
 .content {
   display: block;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.wenda {
-  height: 5px;
-  margin-top: 6px;
-  margin-bottom: 2rem;
 }
 </style>

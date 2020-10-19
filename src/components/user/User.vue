@@ -30,6 +30,7 @@
         </span>
       </el-dialog>
     </el-header>
+    
     <el-container>
       <el-aside>
         <el-menu
@@ -52,6 +53,7 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
+
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -87,6 +89,17 @@ export default {
     this.activePath = window.sessionStorage.getItem("activePath");
     console.log(this.activePath);
   },
+  
+  beforeCreate: async function() {
+    try {
+      const data = await this.$http.get("admin");
+      console.log(data)
+    } catch (err) {
+      console.log(err)
+      this.$message.error(err);
+      this.$router.push("/login");
+    }
+  },
 };
 </script>
 
@@ -112,8 +125,9 @@ export default {
 .logout {
   display: inline;
   font-size: 30px;
+  color: white;
   position: relative;
-  left: 80%;
+  left: 85%;
   top: 15%;
 }
 </style>

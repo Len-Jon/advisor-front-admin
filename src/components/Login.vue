@@ -78,10 +78,10 @@ export default {
 
         switch (data.data[0].authority) {
           case "ROLE_ADMIN":
-            this.$router.push("/admin");
+            this.$router.push("/admin/statistic");
             break;
           case "ROLE_USER":
-            this.$router.push("/user");
+            this.$router.push("/user/statistic");
             break;
         }
       });

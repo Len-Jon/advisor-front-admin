@@ -6,38 +6,32 @@
       size="medium"
       @click="addDialogVisible=true"
     >添加账号</el-button>
+
     <el-table
       :data="accountData"
-      style="width: 70%;"
+      style="width: 60vw;"
     >
       <el-table-column
         prop="username"
         label="用户名"
-        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="college"
         label="学院"
-        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="count"
         label="已完成人数"
-        width="180"
       >
       </el-table-column>
       <el-table-column
         prop="enabled"
         label="已启用"
-        width="180"
       >
       </el-table-column>
-      <el-table-column
-        label="操作"
-        width="200"
-      >
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -174,6 +168,38 @@
       </div>
     </el-dialog>
 
+    <!-- 超管自己编辑弹框 -->
+    <el-dialog
+      title="编辑"
+      :visible.sync="adminEditDialogVisible"
+    >
+      <el-form :model="editForm">
+        <el-form-item label="用户名">
+          <el-input
+            v-bind:value="adminEditForm.username"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input
+            v-model="adminEditForm.password"
+            placeholder="密码为空则不修改"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleEdit"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 删除弹框 -->
     <el-dialog
       title="警告"
@@ -204,6 +230,7 @@ export default {
     return {
       accountData: [],
       editDialogVisible: false,
+      adminEditDialogVisible: false,
       addDialogVisible: false,
       dialogData: "",
       editForm: {
@@ -217,6 +244,10 @@ export default {
         password: "",
         enabled: true,
         college: "",
+      },
+      adminEditForm: {
+        username: "",
+        password: "",
       },
       enabled: true,
       collegeList: [],
@@ -282,6 +313,11 @@ export default {
   methods: {
     handleEditBtnClicked(scope) {
       console.log("scope:", scope);
+      if (scope.row.username === "admin") {
+        this.adminEditDialogVisible = true;
+        this.adminEditForm.username = scope.row.username;
+        return;
+      }
       this.editDialogVisible = true;
       this.accountData = this.tableData;
       this.editForm.username = scope.row.username;

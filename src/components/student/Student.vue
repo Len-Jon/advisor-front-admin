@@ -36,9 +36,21 @@
       </el-option>
     </el-select>
 
-    <!-- 题目 -->
+    <!-- 单选题目 -->
     <Problem
-      v-for="(item, index) in problems"
+      v-for="(item, index) in singleProblems"
+      :key="index"
+      :rank="item.rank"
+      :type="item.type"
+      :problemId="item.id"
+      :content.sync="item.content"
+      :optionEntities.sync="item.optionEntities"
+      @updateAnswer="handleAnswerChange"
+    />
+
+    <!-- 问答 -->
+    <Problem
+      v-for="(item, index) in wendaProblems"
       :key="index"
       :rank="item.rank"
       :type="item.type"
@@ -69,7 +81,6 @@ export default {
       advisorList: [],
       selectedCollege: "",
       selectedAdvisor: "",
-      submitAdvisorId: -1,
       problems: [],
       submitForm: {
         college: "",
@@ -77,19 +88,29 @@ export default {
         answerEntityList: [],
         _csrf: "_csrf",
       },
+      singleProblems: [],
+      wendaProblems: [],
     };
   },
   async created() {
     const res = await this.$http.get("");
+    if (res.data.title === "你已经提交过啦") return this.$router.push("/fail");
     console.log(res);
     // this.problems = res.data.problems;
-    // this.colleges = res.data.colleges.map((item) => {
-    //   return {
-    //     value: item,
-    //     label: item,
-    //   };
-    // });
-    // this.advisors = res.data.advisors;
+    res.data.problems.forEach((item) => {
+      if (item.type === 1) this.singleProblems.push(item);
+      if (item.type == 2) this.wendaProblems.push(item);
+      // else this.wendaProblems.push(item);
+    });
+    console.log(res.data.problems);
+    console.log('wendawenda',this.wendaProblems);
+    this.colleges = res.data.colleges.map((item) => {
+      return {
+        value: item,
+        label: item,
+      };
+    });
+    this.advisors = res.data.advisors;
   },
   methods: {
     handleCollegeClicked(val) {
@@ -101,9 +122,11 @@ export default {
         }));
       this.submitForm.college = val;
     },
+
     handleAdvisorClicked(val) {
       this.submitForm.advisor = val;
     },
+
     handleAnswerChange({ problemId, content }) {
       const isExistBefore = this.submitForm.answerEntityList.find(
         (item) => item.problemId === problemId
@@ -120,7 +143,8 @@ export default {
     },
     async submitDesign() {
       let res = await this.$http.post("submit", this.submitForm);
-      // console.log(res);
+      console.log(res.data.title === "你已经提交过啦");
+      if (res.data.title === "你已经提交过啦") this.$route.push("/fail");
       if (res !== 200)
         return this.$message.error(res.data.title, res.data.content);
       return this.$message.success("提交成功，感谢您参与本次调查！");

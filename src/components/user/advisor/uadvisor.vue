@@ -2,7 +2,7 @@
   <div class="main">
     <el-table
       :data="advisors"
-      style="width: 70%"
+      style="width: 60vw"
     >
       <el-table-column
         prop="id"

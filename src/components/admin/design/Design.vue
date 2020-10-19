@@ -56,12 +56,9 @@ export default {
               .map((item) => item.choose)
               .filter((item) => item.length !== 0)
           );
-          prev.score.push(
-            ...curr.options
-              .map((item) => Number(item.score))
-              .filter((item) => item)
-          );
-
+          if (curr.type === "单选") {
+            prev.score.push(...curr.options.map((item) => item.score));
+          }
           return prev;
         },
         {
@@ -71,7 +68,6 @@ export default {
           score: [],
         }
       );
-      console.log(submitData);
       const res = await this.$http.post("api/design", submitData);
       console.log(res);
       if (res.code !== 200) return this.$message.error("提交失败！");

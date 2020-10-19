@@ -7,7 +7,7 @@
     >添加导员</el-button>
     <el-table
       :data="advisors"
-      style="width: 70%"
+      style="width: 60vw"
     >
       <el-table-column
         prop="id"
@@ -177,11 +177,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="detailDialogVisible = false">取 消</el-button>
         <el-button
-          type="primary"
+          type="success"
           @click="detailDialogVisible = false"
-        >确 定</el-button>
+        >返回</el-button>
       </span>
     </el-dialog>
   </div>
@@ -217,43 +216,6 @@ export default {
         college: "",
       },
       echartsInstances: [],
-      // echartOption: {
-      //   title: {
-      //     text: "各学院完成人数",
-      //     left: "30%",
-      //     textStyle: { fontWeight: 600, fontSize: 10 },
-      //   },
-      //   tooltip: {},
-      //   grid: {
-      //     //直角坐标系内绘图网格
-      //     // show: true, //是否显示直角坐标系网格。[ default: false ]
-      //     left: "50%", //grid 组件离容器左侧的距离。
-      //     // right: "30px",
-      //     // borderColor: "#c45455", //网格的边框颜色
-      //     // bottom: "20%", //
-      //   },
-      //   yAxis: {
-      //     data: [],
-      //     axisLabel: {
-      //       //坐标轴刻度标签的相关设置。
-      //       interval: 0,
-      //       // formatter: (value, index) => {
-      //       //   // 格式化成月/日，只在第一个刻度显示年份
-      //       //   if (value.length >)
-      //       // },
-      //     },
-      //     inverse: true,
-      //   },
-      //   xAxis: { type: "value" },
-      //   series: [
-      //     {
-      //       name: "完成人数",
-      //       type: "bar",
-      //       barWidth: "50%",
-      //       data: [],
-      //     },
-      //   ],
-      // },
     };
   },
   created: async function() {
@@ -303,6 +265,7 @@ export default {
     async handleDetail(scope) {
       this.detailDialogVisible = true;
       this.clickedId = scope.row.id;
+      this.echartsInstances = [];
       const { data } = await this.getDetailData();
       data.problems.forEach((problem) => {
         const chart = {
@@ -316,7 +279,6 @@ export default {
         this.echartsInstances.push(chart);
       });
       this.$nextTick().then(() => {
-        console.log(this.echartsInstances);
         this.echartsInstances.forEach((chart) => {
           const { title } = chart;
           console.log(this.$refs[title]);
@@ -324,8 +286,8 @@ export default {
           chart.options = {
             title: {
               text: chart.title,
-              left: "50%",
-              textStyle: { fontWeight: 400, fontSize: 20 },
+              left: "40%",
+              textStyle: { fontWeight: 400, fontSize: 20, width: '20px' },
             },
             tooltip: {},
             grid: {
@@ -397,5 +359,7 @@ export default {
 .chart {
   width: 80%;
   height: 50vh;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 </style>

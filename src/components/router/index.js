@@ -39,11 +39,8 @@ const routes = [
       { path: 'advisor', component: uAdvisor },
     ]
   },
-  {
-    path: '/student', component: Student, children: [
-      { path: 'fail', component: Fail }
-    ]
-  },
+  { path: '/', component: Student },
+  { path: '/fail', component: Fail }
 
 ]
 

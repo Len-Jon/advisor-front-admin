@@ -17,7 +17,7 @@
       <el-button
         size="medium"
         type="primary"
-        @click="handleExportCollegeCount"
+        @click="handleExport('collegeCount', '完成人数')"
       >导出完成人数</el-button>
     </div>
 
@@ -32,32 +32,35 @@
         <el-button
           size="medium"
           type="primary"
-          @click="handleExportAdvisorScore"
+          @click="handleExport('advisorScore','导员成绩')"
         >导出导员成绩</el-button>
+
         <el-button
           size="medium"
           type="success"
-          @click="handleExportEvaluate"
+          @click="handleExport('advisorEvaluate', '主观回答')"
         >导出主观回答</el-button>
       </div>
 
-      <el-table :data="tableData">
+      <el-table
+        :data="tableData"
+        style="width: 60vw"
+      >
         <el-table-column
           prop="college"
           label="学院"
         ></el-table-column>
+
         <el-table-column
           prop="advisor"
           label="辅导员"
         ></el-table-column>
 
-        
         <el-table-column
-          v-for="(item, index) in tableData[0].score"
-          :key="index"
-          :prop="score"
-          :label="index+1"
-          :formatter="scoreFormat"
+          v-for="(prop, index) in scoreProps"
+          :key="prop"
+          :label="String(index + 1)"
+          :prop="prop"
         ></el-table-column>
 
         <el-table-column
@@ -120,11 +123,15 @@ export default {
       echartHeight: 0,
       echartInstance: null,
       isSingleCollege: false,
+      scoreProps: [],
     };
   },
   computed: {
     college() {
       return this.collegeNames.map((item) => ({ value: item, label: item }));
+    },
+    tableColumnData() {
+      return this.tableData.map((item) => item.score);
     },
   },
   created: function() {
@@ -133,12 +140,8 @@ export default {
   },
   mounted: function() {
     this.drawTable();
-    console.log("option", this.echartOption);
   },
   methods: {
-    scoreFormat(row, column) {
-      return row.score[column.label-1]
-    },
     async drawTable() {
       this.echartInstance = this.$echarts.init(this.$refs.middle);
       const { data } = await this.$http.get(
@@ -161,7 +164,6 @@ export default {
       this.collegeNames.push("所有学院");
       let tmp = JSON.parse(data.collegeNames);
       this.collegeNames = this.collegeNames.concat(tmp);
-      console.log(this.collegeNames);
     },
 
     async getTableData() {
@@ -170,34 +172,32 @@ export default {
         `api/changetable?collegeName=${this.chosenValue}`
       );
       console.log(res);
-      this.tableData = res.data.table;
+      this.tableData = res.data.table.map((item) => {
+        const { score, ...rest } = item;
+        this.scoreProps = score.map((_, index) => `problem${index}`);
+        const scoreObj = score.reduce((prev, curr, index) => {
+          prev[`problem${index}`] = curr;
+          return prev;
+        }, {});
+        return {
+          ...rest,
+          ...scoreObj,
+        };
+      });
+      console.log(this.tableData);
     },
 
-    async handleExportCollegeCount() {
+    handleExport(url, filename) {
+      // 请求excel配置项
       let myObj = {
         method: "get",
-        url: "export/collegeCount",
-        fileName: "完成人数.xlsx",
+        url: `export/${url}`,
+        fileName: `${filename}.xlsx`,
       };
       exportMethod(myObj);
     },
-    async handleExportAdvisorScore() {
-      let myObj = {
-        method: "get",
-        url: "export/advisorScore",
-        fileName: "导员成绩.xlsx",
-      };
-      exportMethod(myObj);
-    },
-    async handleExportEvaluate() {
-      let myObj = {
-        method: "get",
-        url: "export/advisorEvaluate",
-        fileName: "主观回答.xlsx",
-      };
-      exportMethod(myObj);
-    },
-    async handleClick() {
+
+    handleClick() {
       console.log(this.chosenValue);
       this.drawTable();
       this.getTableData();
@@ -229,10 +229,5 @@ export default {
 
 .buttons {
   display: flex;
-}
-
-.middle {
-  /* width: 80vw; */
-  height: 90vh;
 }
 </style>
