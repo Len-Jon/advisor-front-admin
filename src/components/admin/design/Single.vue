@@ -10,6 +10,8 @@
       <el-form-item prop="choose">
         <el-input
           class="bigInput"
+          type="textarea"
+          rows="1"
           placeholder="选项"
           v-model="item.choose"
           size="medium"
@@ -60,7 +62,7 @@ export default {
 }
 
 .bigInput {
-  width: 110px;
+  width: 100px;
   margin-right: 15px;
   margin-top: 25px;
 }
