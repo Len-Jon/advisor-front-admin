@@ -54,10 +54,11 @@
 
     <div class="bottom">
       <img
+        class="logo"
         src="@/assets/imgs/qylogo.png"
         alt=""
       >
-      <span>青柚工作室提供技术支持</span>
+      <span class="banquan">青柚工作室提供技术支持</span>
     </div>
   </div>
 </template>
@@ -173,12 +174,17 @@ export default {
 }
 
 .bottom {
-  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
 }
 
-.bottom img {
+.logo {
   width: 8%;
-  margin-left: 20%;
-  margin-top: 3rem;
+}
+
+.banquan {
+  margin-left: 10px;
 }
 </style>
