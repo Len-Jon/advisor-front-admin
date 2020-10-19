@@ -36,21 +36,9 @@
       </el-option>
     </el-select>
 
-    <!-- 单选题目 -->
+    <!-- 题目 -->
     <Problem
-      v-for="(item, index) in singleProblems"
-      :key="index"
-      :rank="item.rank"
-      :type="item.type"
-      :problemId="item.id"
-      :content.sync="item.content"
-      :optionEntities.sync="item.optionEntities"
-      @updateAnswer="handleAnswerChange"
-    />
-
-    <!-- 问答 -->
-    <Problem
-      v-for="(item, index) in wendaProblems"
+      v-for="(item, index) in problems"
       :key="index"
       :rank="item.rank"
       :type="item.type"
@@ -63,6 +51,14 @@
       type="primary"
       @click="submitDesign"
     >提交</el-button>
+
+    <div class="bottom">
+      <img
+        src="@/assets/imgs/qylogo.png"
+        alt=""
+      >
+      <span>青柚工作室提供技术支持</span>
+    </div>
   </div>
 </template>
 
@@ -88,22 +84,15 @@ export default {
         answerEntityList: [],
         _csrf: "_csrf",
       },
-      singleProblems: [],
-      wendaProblems: [],
     };
   },
   async created() {
     const res = await this.$http.get("");
     if (res.data.title === "你已经提交过啦") return this.$router.push("/fail");
     console.log(res);
-    // this.problems = res.data.problems;
-    res.data.problems.forEach((item) => {
-      if (item.type === 1) this.singleProblems.push(item);
-      if (item.type == 2) this.wendaProblems.push(item);
-      // else this.wendaProblems.push(item);
-    });
+    this.problems = res.data.problems;
     console.log(res.data.problems);
-    console.log('wendawenda',this.wendaProblems);
+    console.log("wendawenda", this.wendaProblems);
     this.colleges = res.data.colleges.map((item) => {
       return {
         value: item,
@@ -155,7 +144,7 @@ export default {
 
 
 <style scoped>
-img {
+.head img {
   width: 100%;
 }
 
@@ -177,5 +166,19 @@ img {
   margin-top: 8px;
   margin-left: 50%;
   transform: translateX(-50%);
+}
+
+.el-textarea {
+  margin-top: 2rem;
+}
+
+.bottom {
+  height: 10rem;
+}
+
+.bottom img {
+  width: 8%;
+  margin-left: 20%;
+  margin-top: 3rem;
 }
 </style>

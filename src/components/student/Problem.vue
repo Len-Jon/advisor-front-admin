@@ -17,7 +17,7 @@
 
     <!-- 问答题 -->
     <div v-else>
-      <span>{{rank}}、{{content}}</span>
+      <span class="content">{{rank}}、{{content}}</span>
       <el-form :rules="rules">
         <el-form-item prop="wenda">
           <el-input

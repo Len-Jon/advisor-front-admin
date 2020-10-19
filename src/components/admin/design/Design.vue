@@ -9,8 +9,10 @@
       <el-button
         size="medium"
         type="success"
-        @click="handleSubmit"
-      >提交</el-button>
+        @click="showLoading"
+        v-loading.fullscreen.lock="loading"
+      >
+        提交</el-button>
     </div>
     <Problem
       v-for="(item, index) in problems"
@@ -34,6 +36,7 @@ export default {
         title: "",
         options: [],
       },
+      loading: false,
     };
   },
   components: {
@@ -45,6 +48,11 @@ export default {
         ...this.problem,
         options: new Array(5).fill().map(() => ({ choose: "", score: "" })),
       });
+    },
+    showLoading() {
+      this.loading = true;
+      let resCode = this.handleSubmit();
+      if (resCode === 200) this.loading = false;
     },
     async handleSubmit() {
       const submitData = this.problems.reduce(
@@ -72,12 +80,15 @@ export default {
       console.log(res);
       if (res.code !== 200) return this.$message.error("提交失败！");
       this.$message.success("提交成功！");
-      setTimeout("location.reload()", 2000);
+      setTimeout("location.reload()", 1000);
+      return res.code;
     },
+
     handleProblemDelete(index) {
       this.problems.splice(index, 1);
     },
   },
+
   created: async function() {
     const res = await this.$http.get("design");
     console.log("designres", res);

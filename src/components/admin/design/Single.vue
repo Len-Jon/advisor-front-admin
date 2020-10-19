@@ -9,9 +9,10 @@
     >
       <el-form-item prop="choose">
         <el-input
-          class="littleInput"
+          class="bigInput"
           placeholder="选项"
           v-model="item.choose"
+          size="medium"
         ></el-input>
       </el-form-item>
       <el-form-item prop="score">
@@ -58,8 +59,14 @@ export default {
   display: flex;
 }
 
+.bigInput {
+  width: 110px;
+  margin-right: 15px;
+  margin-top: 25px;
+}
+
 .littleInput {
-  width: 70px;
+  width: 60px;
   margin-right: 15px;
   margin-top: 25px;
 }

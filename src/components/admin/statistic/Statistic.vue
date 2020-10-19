@@ -159,6 +159,7 @@ export default {
       this.echartOption.series[0].data = data.data;
       this.echartInstance.setOption(this.echartOption);
     },
+
     async getCollegeList() {
       let { data } = await this.$http.get("admin");
       this.collegeNames.push("所有学院");
@@ -171,20 +172,22 @@ export default {
       let res = await this.$http.get(
         `api/changetable?collegeName=${this.chosenValue}`
       );
-      console.log(res);
+      console.log("tabledata", res);
       this.tableData = res.data.table.map((item) => {
         const { score, ...rest } = item;
         this.scoreProps = score.map((_, index) => `problem${index}`);
         const scoreObj = score.reduce((prev, curr, index) => {
+          console.log("prev", prev);
           prev[`problem${index}`] = curr;
           return prev;
         }, {});
+        console.log("scoreobj", scoreObj);
         return {
           ...rest,
           ...scoreObj,
         };
       });
-      console.log(this.tableData);
+      console.log("this.tableData", this.tableData);
     },
 
     handleExport(url, filename) {
