@@ -39,7 +39,11 @@
     </el-form>
     <el-button type="primary" @click="submitDesign('mainForm')">提交</el-button>
     <div class="bottom">
-      <img src="@/assets/imgs/qylogo.png" alt="">
+      <img
+        class="logo"
+        src="@/assets/imgs/qylogo.png"
+        alt=""
+      >
       <span class="banquan">青柚工作室提供技术支持</span>
     </div>
   </div>
@@ -186,6 +190,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 20px 0;
+<<<<<<< HEAD
 }
 
 .el-select {
@@ -194,13 +199,22 @@ export default {
 
 .bottom img {
   width: 6%;
+=======
+}
+
+.logo {
+  width: 8%;
+>>>>>>> 6daa7e68df0499da9aa682d5a7c367d3246928e8
 }
 
 .banquan {
   margin-left: 10px;
+<<<<<<< HEAD
   text-shadow: 0 1px 1px #e9e9e9;
   font-size: 14px;
   color: #545454;
+=======
+>>>>>>> 6daa7e68df0499da9aa682d5a7c367d3246928e8
 }
 
 /* .el-form-item {
