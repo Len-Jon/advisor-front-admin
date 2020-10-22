@@ -3,7 +3,7 @@ module.exports = {
     port: 8080, // 源地址端口，自行修改
     proxy: {
       "/api": {
-        target: "https://qingyou.njupt.edu.cn/mini_program/advicetoadvisor/", // 跨域目标主机，自行修改
+        target: "https://tomcat.lenjon.top/advicetoadvisor/", // 跨域目标主机，自行修改
         ws: true, // 代理 websockets
         changeOrigin: true,
         pathRewrite: {

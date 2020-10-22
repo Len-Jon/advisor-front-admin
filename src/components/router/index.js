@@ -15,6 +15,7 @@ const uAdvisor = () => import('../user/advisor/uadvisor.vue')
 const Student = () => import('../student/Student.vue')
 const Fail = () => import('../student/Fail.vue')
 
+
 Vue.use(VueRouter)
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题

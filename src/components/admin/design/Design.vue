@@ -1,18 +1,35 @@
 <template>
   <div class="main">
+    <div class="mainDiv">
+      <el-form :model="ruleForm" :rules="rules">
+        <el-form-item prop="content">
+          <el-input
+            style="margin-top: 20px; width: 65%;"
+            placeholder="请输入头图标题"
+            v-model="ruleForm.content"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="topBtns">
+        <el-upload
+          action="api/api/img_upload"
+          list-type="picture"
+          :limit="1"
+          with-credentials
+          :on-success="handleSuccess"
+        >
+          <el-button style="margin-top: 20px;" size="medium" type="primary">点击上传问卷头图</el-button>
+        </el-upload>
+      </div>
+    </div>
     <div class="btns">
-      <el-button
-        size="medium"
-        type="primary"
-        @click="handleAddProblem"
-      >新增一项</el-button>
+      <el-button size="medium" type="primary" @click="handleAddProblem">新增一项</el-button>
       <el-button
         size="medium"
         type="success"
         @click="showLoading"
         v-loading.fullscreen.lock="loading"
-      >
-        提交</el-button>
+      >提交</el-button>
     </div>
     <Problem
       v-for="(item, index) in problems"
@@ -37,6 +54,15 @@ export default {
         options: [],
       },
       loading: false,
+      picUrl: "",
+      ruleForm: {
+        content: "",
+      },
+      rules: {
+        content: [
+          { required: true, message: "请输入头图标题", trigger: "blur" },
+        ],
+      },
     };
   },
   components: {
@@ -49,11 +75,18 @@ export default {
         options: new Array(5).fill().map(() => ({ choose: "", score: "" })),
       });
     },
+
     showLoading() {
-      this.loading = true;
+      const loading = this.$loading({
+        lock: true,
+        text: "正在提交",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       let resCode = this.handleSubmit();
-      if (resCode === 200) this.loading = false;
+      if (resCode === 200) loading.close();
     },
+
     async handleSubmit() {
       const submitData = this.problems.reduce(
         (prev, curr) => {
@@ -86,6 +119,23 @@ export default {
 
     handleProblemDelete(index) {
       this.problems.splice(index, 1);
+    },
+
+    handleSuccess(res) {
+      console.log("res", res);
+      this.picUrl = res.data.img_url;
+      if (this.ruleForm.content.length === 0)
+        return this.$message.error("请输入头图标题");
+      if (res.code !== 200) return this.$message.error("上传失败！");
+      this.$message.success("上传成功！");
+      this.setTitle(this.picUrl);
+    },
+    async setTitle(url) {
+      const res = await this.$http.post("api/setTitle", {
+        content: this.ruleForm.content,
+        imgUrl: url,
+      });
+      console.log("settitle,res", res);
     },
   },
 
@@ -123,5 +173,14 @@ export default {
 <style scoped>
 .btns {
   margin-left: 13%;
+  margin-top: 40px;
+}
+
+.mainDiv {
+  margin-left: 13%;
+}
+
+.topBtns {
+  display: flex;
 }
 </style>

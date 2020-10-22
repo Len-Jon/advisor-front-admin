@@ -101,16 +101,16 @@ export default {
       window.sessionStorage.setItem("activePath", activePath);
     },
   },
-  beforeCreate: async function() {
-    try {
-      const data = await this.$http.get("admin");
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-      this.$message.error("请先登录");
-      this.$router.push("/login");
-    }
-  },
+  // beforeCreate: async function() {
+  //   try {
+  //     const data = await this.$http.get("admin");
+  //     console.log(data);
+  //   } catch (err) {
+  //     console.log(err);
+  //     this.$message.error("请先登录");
+  //     this.$router.push("/login");
+  //   }
+  // },
   created: async function() {
     const data = await this.$http.get("admin");
     console.log(data);

@@ -7,22 +7,11 @@
       :model="item"
       :rules="rules"
     >
-      <el-form-item prop="choose">
-        <el-input
-          class="bigInput"
-          type="textarea"
-          rows="1"
-          placeholder="选项"
-          v-model="item.choose"
-          size="medium"
-        ></el-input>
+      <el-form-item class="bigItem" prop="choose">
+        <el-input class="bigInput" placeholder="选项" v-model="item.choose"></el-input>
       </el-form-item>
-      <el-form-item prop="score">
-        <el-input
-          class="littleInput"
-          placeholder="分值"
-          v-model.number="item.score"
-        ></el-input>
+      <el-form-item class="littleItem" prop="score">
+        <el-input class="littleInput" placeholder="分值" v-model.number="item.score"></el-input>
       </el-form-item>
     </el-form>
   </div>
@@ -55,21 +44,33 @@ export default {
 <style scoped>
 .single {
   display: flex;
+  flex-direction: column;
 }
 
 .option-item {
   display: flex;
+  justify-content: space-between;
 }
 
 .bigInput {
-  width: 100px;
   margin-right: 15px;
   margin-top: 25px;
 }
 
 .littleInput {
-  width: 60px;
-  margin-right: 15px;
   margin-top: 25px;
+}
+
+.bigItem {
+  flex: 10;
+}
+
+.littleItem {
+  flex: 1;
+  margin-left: 10%;
+}
+
+.el-form {
+  width: 50vw;
 }
 </style>

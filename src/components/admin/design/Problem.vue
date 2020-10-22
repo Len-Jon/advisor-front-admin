@@ -23,9 +23,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="tigan">
           <el-input
-            class="tigan"
             placeholder="题干"
             v-model="problemItem.title"
           ></el-input>
@@ -105,7 +104,7 @@ p {
 }
 
 .tigan {
-  width: 720px;
+  width: 65%;
 }
 
 .el-form-item {
@@ -113,12 +112,15 @@ p {
 }
 
 .form {
-  width: 90%;
   display: flex;
   flex-direction: column;
 }
 
 .deleteBtn {
   margin-left: 20px;
+}
+
+.el-form {
+  width: 60vw;
 }
 </style>

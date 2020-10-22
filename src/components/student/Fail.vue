@@ -1,14 +1,12 @@
 <template>
   <div>
     <div class="head">
-      <img
-        src="../../assets/imgs/head.png"
-        alt=""
-      >
+      <img :src="imgUrl" alt="">
     </div>
     <span class="title">[2019-2020-2]南京邮电大学辅导员评议</span>
     <div class="hint">
-      <span>你已经提交过啦</span><br>
+      <span>你已经提交过啦</span>
+      <br>
       <span>刷票是不可以的呢~</span>
     </div>
   </div>
@@ -18,7 +16,19 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      imgUrl: "",
+    };
+  },
+  created() {
+    this.getImageUrl();
+  },
+  methods: {
+    async getImageUrl() {
+      let res = await this.$http.get("api/getTitle");
+      console.log("imgurl", res);
+      this.imgUrl = res.data.imgUrl;
+    },
   },
 };
 </script>
