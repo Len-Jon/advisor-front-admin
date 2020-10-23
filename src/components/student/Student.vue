@@ -32,6 +32,7 @@
         :rank="item.rank"
         :type="item.type"
         :problemId="item.id"
+        :submitForm="submitForm.answerEntityList[index]"
         :content.sync="item.content"
         :optionEntities.sync="item.optionEntities"
         @updateAnswer="handleAnswerChange"
@@ -39,11 +40,7 @@
     </el-form>
     <el-button type="primary" @click="submitDesign('mainForm')">提交</el-button>
     <div class="bottom">
-      <img
-        class="logo"
-        src="@/assets/imgs/qylogo.png"
-        alt=""
-      >
+      <img class="logo" src="@/assets/imgs/qylogo.png" alt="">
       <span class="banquan">青柚工作室提供技术支持</span>
     </div>
   </div>
@@ -76,9 +73,6 @@ export default {
         advisor: [
           { required: true, message: "请选择辅导员", trigger: "change" },
         ],
-        // answer: [
-        //   { required: true, message: "请填写此项", trigger: "change" },
-        // ],
       },
     };
   },
@@ -87,14 +81,18 @@ export default {
     if (res.data.title === "你已经提交过啦") return this.$router.push("/fail");
     console.log(res);
     this.problems = res.data.problems;
-    console.log(res.data.problems);
-    console.log("wendawenda", this.wendaProblems);
+    console.log(1, res.data.problems);
     this.colleges = res.data.colleges.map((item) => {
       return {
         value: item,
         label: item,
       };
     });
+    this.submitForm.answerEntityList = res.data.problems.map((item) => ({
+      problemId: item.id,
+      content: "",
+      isEmpty: true,
+    }));
     this.advisors = res.data.advisors;
     this.getImageUrl();
   },
@@ -117,29 +115,24 @@ export default {
       const isExistBefore = this.submitForm.answerEntityList.find(
         (item) => item.problemId === problemId
       );
-      if (!isExistBefore) {
-        const newAnswer = {
-          problemId,
-          content,
-        };
-        this.submitForm.answerEntityList.push(newAnswer);
-      } else {
-        isExistBefore.content = content;
-      }
+      isExistBefore.content = content;
     },
     submitDesign(formName) {
-      // console.log(this.submitForm);
-          eventHub.$emit("validteData");
+      console.log(this.submitForm);
+      eventHub.$emit("validteData");
+      const canSubmit = this.submitForm.answerEntityList.every(
+        (item) => !item.isEmpty
+      );
       this.$refs[formName].validate(async (valid) => {
-        if (valid) {
-          // let res = await this.$http.post("submit", this.submitForm);
-          // console.log(this.submitForm);
-          // if (res.data.title === "你已经提交过啦") this.$route.push("/fail");
-          // if (res !== 200)
-          //   return this.$message.error(res.data.title, res.data.content);
-          // return this.$message.success("提交成功，感谢您参与本次调查！");
+        if (valid && canSubmit) {
+          let res = await this.$http.post("submit", this.submitForm);
+          console.log(this.submitForm);
+          if (res.data.title === "你已经提交过啦") this.$route.push("/fail");
+          if (res !== 200)
+            return this.$message.error(res.data.title, res.data.content);
+          return this.$message.success("提交成功，感谢您参与本次调查！");
         } else {
-          return false;
+          return this.$message.error('提交失败，请重试！');
         }
       });
     },
@@ -176,7 +169,7 @@ export default {
 
 .el-button {
   width: 90%;
-  margin-top: 8px;
+  margin-top: 2rem;
   margin-left: 50%;
   transform: translateX(-50%);
 }
@@ -190,7 +183,6 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 20px 0;
-<<<<<<< HEAD
 }
 
 .el-select {
@@ -199,25 +191,14 @@ export default {
 
 .bottom img {
   width: 6%;
-=======
-}
-
-.logo {
-  width: 8%;
->>>>>>> 6daa7e68df0499da9aa682d5a7c367d3246928e8
 }
 
 .banquan {
   margin-left: 10px;
-<<<<<<< HEAD
   text-shadow: 0 1px 1px #e9e9e9;
   font-size: 14px;
   color: #545454;
-=======
->>>>>>> 6daa7e68df0499da9aa682d5a7c367d3246928e8
+  position: relative;
+  top: 3px;
 }
-
-/* .el-form-item {
-  margin: 0;
-} */
 </style>
