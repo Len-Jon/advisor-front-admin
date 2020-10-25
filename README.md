@@ -1,4 +1,6 @@
-# 辅导员评议--前端
+# 辅导员评议--前端--后台
+
+# 想看学生端请[猛戳这里](https://github.com/SleepDevil/advisor-front-student)
 
 ## 克隆本项目
 
