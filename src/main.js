@@ -8,7 +8,7 @@ import axios from 'axios'
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
-axios.defaults.baseURL = "api/"
+axios.defaults.baseURL = "http://47.100.90.111:8088/"
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(value => value.data)
 Vue.prototype.$http = axios

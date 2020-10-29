@@ -10,7 +10,7 @@
       style="width: 60vw"
     >
       <el-table-column
-        prop="id"
+        type="index"
         label="ID"
         width="160"
       >
