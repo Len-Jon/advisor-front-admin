@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: "/admin/",
   devServer: {
     port: 8080, // 源地址端口，自行修改
     proxy: {
