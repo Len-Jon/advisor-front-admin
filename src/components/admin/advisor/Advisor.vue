@@ -1,76 +1,45 @@
 <template>
   <div class="main">
-    <el-button
-      size="medium"
-      type="success"
-      @click="addAdvisorVisible = true"
-    >添加导员</el-button>
-    <el-table
-      :data="advisors"
-      style="width: 60vw"
+    <el-button size="medium" type="success" @click="addAdvisorVisible = true"
+      >添加导员</el-button
     >
-      <el-table-column
-        type="index"
-        label="ID"
-        width="160"
-      >
+    <el-table :data="advisors" style="width: 60vw">
+      <el-table-column type="index" label="ID" width="160"> </el-table-column>
+      <el-table-column prop="advisor" label="姓名" width="180">
       </el-table-column>
-      <el-table-column
-        prop="advisor"
-        label="姓名"
-        width="180"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="college"
-        label="学院"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="count"
-        label="已完成人数"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="operation"
-        label="操作"
-        width="300"
-      >
+      <el-table-column prop="college" label="学院"> </el-table-column>
+      <el-table-column prop="count" label="已完成人数"> </el-table-column>
+      <el-table-column prop="operation" label="操作" width="300">
         <template slot-scope="scope">
-          <el-button
-            size="medium"
-            type="primary"
-            @click="handleDetail(scope)"
-          >详情</el-button>
-          <el-button
-            size="medium"
-            type="success"
-            @click="handleEdit(scope)"
-          >编辑</el-button>
+          <el-button size="medium" type="primary" @click="handleDetail(scope)"
+            >详情</el-button
+          >
+          <el-button size="medium" type="success" @click="handleEdit(scope)"
+            >编辑</el-button
+          >
           <el-button
             size="medium"
             type="danger"
-            @click="deleteDialogVisible = true;toDeleteId = scope.row.id"
-          >删除</el-button>
+            @click="
+              deleteDialogVisible = true;
+              toDeleteId = scope.row.id;
+            "
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加账号弹框 -->
-    <el-dialog
-      title="添加导员"
-      :visible.sync="addAdvisorVisible"
-    >
+    <el-dialog title="添加导员" :visible.sync="addAdvisorVisible">
       <el-form :model="addAdvisorForm">
         <el-form-item label="姓名">
           <el-input v-model="addAdvisorForm.advisor"></el-input>
         </el-form-item>
         <!-- 学院列表 -->
-        <el-form-item label="学院"><br>
-          <el-select
-            v-model="college"
-            placeholder="请选择"
-          >
+        <el-form-item label="学院"
+          ><br />
+          <el-select v-model="college" placeholder="请选择">
             <el-option
               v-for="item in colleges"
               :key="item.value"
@@ -81,62 +50,35 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
+      <div slot="footer" class="dialog-footer">
         <el-button @click="addAdvisorVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="addAdvisor"
-        >确 定</el-button>
+        <el-button type="primary" @click="addAdvisor">确 定</el-button>
       </div>
     </el-dialog>
 
     <!-- 删除弹框 -->
-    <el-dialog
-      title="警告"
-      :visible.sync="deleteDialogVisible"
-      width="30%"
-    >
+    <el-dialog title="警告" :visible.sync="deleteDialogVisible" width="30%">
       <span>该操作不可逆，确定要删除吗？</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button
-          type="danger"
-          @click="handleDelete"
-        >确 定</el-button>
+        <el-button type="danger" @click="handleDelete">确 定</el-button>
       </span>
     </el-dialog>
 
     <!-- 编辑弹框 -->
-    <el-dialog
-      title="编辑"
-      :visible.sync="editDialogVisible"
-    >
-      <el-form
-        :model="editForm"
-        ref="editFormRef"
-      >
+    <el-dialog title="编辑" :visible.sync="editDialogVisible">
+      <el-form :model="editForm" ref="editFormRef">
         <el-form-item label="ID">
           <template>
-            <el-input
-              :value="editForm.id"
-              disabled
-            ></el-input>
+            <el-input :value="editForm.id" disabled></el-input>
           </template>
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="editForm.advisor"></el-input>
         </el-form-item>
-        <el-form-item label="学院"><br>
-          <el-select
-            v-model="editForm.college"
-            placeholder="请选择"
-          >
+        <el-form-item label="学院"
+          ><br />
+          <el-select v-model="editForm.college" placeholder="请选择">
             <el-option
               v-for="item in colleges"
               :key="item.value"
@@ -147,15 +89,9 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
+      <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="pushEditForm"
-        >确 定</el-button>
+        <el-button type="primary" @click="pushEditForm">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -173,19 +109,14 @@
         :key="chart.id"
         :ref="chart.title"
       />
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="success"
-          @click="detailDialogVisible = false"
-        >返回</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="success" @click="detailDialogVisible = false"
+          >返回</el-button
+        >
       </span>
     </el-dialog>
   </div>
 </template>
-
 
 <script>
 import { getCollegeList } from "@/api/getCollegeList.js";
@@ -265,6 +196,7 @@ export default {
     async handleDetail(scope) {
       this.detailDialogVisible = true;
       this.clickedId = scope.row.id;
+      console.log("clickedID", this.clickedId);
       this.echartsInstances = [];
       const { data } = await this.getDetailData();
       data.problems.forEach((problem) => {
@@ -278,20 +210,21 @@ export default {
         };
         this.echartsInstances.push(chart);
       });
+      console.log("instances", this.echartsInstances);
       this.$nextTick().then(() => {
         this.echartsInstances.forEach((chart) => {
           const { title } = chart;
-          console.log(this.$refs[title]);
+          console.log("reftitle", this.$refs[title]);
           chart.instance = this.$echarts.init(this.$refs[title][0]);
           chart.options = {
             title: {
               text: chart.title,
-              left: "40%",
-              textStyle: { fontWeight: 400, fontSize: 20, width: '20px' },
+              left: "25%",
+              textStyle: { fontWeight: 400, fontSize: 20, width: "20px" },
             },
             tooltip: {},
             grid: {
-              left: "25%", //grid 组件离容器左侧的距离。
+              left: "10%", //grid 组件离容器左侧的距离。
             },
             yAxis: {
               data: JSON.parse(chart.labels),
@@ -299,7 +232,7 @@ export default {
                 interval: 0,
               },
             },
-            xAxis: { type: "value" },
+            xAxis: { type: "value", data: chart.data },
             series: [
               {
                 name: "完成人数",
@@ -335,7 +268,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 .el-table {

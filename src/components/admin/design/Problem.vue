@@ -86,7 +86,9 @@ export default {
 }
 
 .mid-content {
+  width: 87%;
   display: flex;
+  justify-content: space-between;
 }
 
 .el-select {
@@ -99,7 +101,6 @@ p {
   color: #9d9d9d;
   margin: 0;
   padding: 0;
-  width: 90%;
   margin: 0 auto;
 }
 
@@ -114,10 +115,6 @@ p {
 .form {
   display: flex;
   flex-direction: column;
-}
-
-.deleteBtn {
-  margin-left: 20px;
 }
 
 .el-form {

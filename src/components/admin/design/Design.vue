@@ -18,18 +18,23 @@
           with-credentials
           :on-success="handleSuccess"
         >
-          <el-button style="margin-top: 20px;" size="medium" type="primary">点击上传问卷头图</el-button>
+          <el-button style="margin-top: 20px;" size="medium" type="primary"
+            >点击上传问卷头图</el-button
+          >
         </el-upload>
       </div>
     </div>
     <div class="btns">
-      <el-button size="medium" type="primary" @click="handleAddProblem">新增一项</el-button>
+      <el-button size="medium" type="primary" @click="handleAddProblem"
+        >新增一项</el-button
+      >
       <el-button
         size="medium"
         type="success"
         @click="showLoading"
         v-loading.fullscreen.lock="loading"
-      >提交</el-button>
+        >提交</el-button
+      >
     </div>
     <Problem
       v-for="(item, index) in problems"
@@ -40,7 +45,6 @@
     />
   </div>
 </template>
-
 
 <script>
 import Problem from "./Problem.vue";
@@ -137,6 +141,10 @@ export default {
       });
       console.log("settitle,res", res);
     },
+    async getHeadTitle() {
+      const res = await this.$http.get("api/getTitle");
+      this.ruleForm.content = res.data.content;
+    },
   },
 
   created: async function() {
@@ -165,10 +173,11 @@ export default {
         options: [],
       };
     }
+
+    this.getHeadTitle();
   },
 };
 </script>
-
 
 <style scoped>
 .btns {

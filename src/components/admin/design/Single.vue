@@ -8,15 +8,31 @@
       :rules="rules"
     >
       <el-form-item class="bigItem" prop="choose">
-        <el-input class="bigInput" placeholder="选项" v-model="item.choose"></el-input>
+        <el-input
+          class="bigInput"
+          placeholder="选项"
+          v-model="item.choose"
+        ></el-input>
       </el-form-item>
       <el-form-item class="littleItem" prop="score">
-        <el-input class="littleInput" placeholder="分值" v-model.number="item.score"></el-input>
+        <span
+           style="font-size: 10px;
+                  color: #9d9d9d;
+                  margin: 0;
+                  padding: 0;
+                  margin: 0 auto;
+                  position: absolute;left: -32px;top: 25px;"
+          >分值</span
+        >
+        <el-input
+          class="littleInput"
+          placeholder="分值"
+          v-model.number="item.score"
+        ></el-input>
       </el-form-item>
     </el-form>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -40,7 +56,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .single {
   display: flex;
@@ -48,12 +63,12 @@ export default {
 }
 
 .option-item {
+  width: 87%;
   display: flex;
   justify-content: space-between;
 }
 
 .bigInput {
-  margin-right: 15px;
   margin-top: 25px;
 }
 
@@ -62,15 +77,12 @@ export default {
 }
 
 .bigItem {
-  flex: 10;
+  width: 86%;
+  margin-right: 5%;
 }
 
 .littleItem {
-  flex: 1;
-  margin-left: 10%;
-}
-
-.el-form {
-  width: 50vw;
+  width: 70px;
+  /* display: flex; */
 }
 </style>
